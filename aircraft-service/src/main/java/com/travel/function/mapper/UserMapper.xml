@@ -19,7 +19,7 @@ userMapper(userMapper.xml文件去除后缀)保证唯一性
     <!-- 查询-->
     <select id="getUser" parameterType="int"
             resultType="com.travel.function.entity.User">
-        select * from users where id=#{id}
+        select * from user where id=#{id}
     </select>
 
 

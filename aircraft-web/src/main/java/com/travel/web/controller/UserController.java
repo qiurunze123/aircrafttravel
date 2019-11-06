@@ -1,6 +1,7 @@
 package com.travel.web.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.travel.function.entity.User;
 import com.travel.function.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,10 @@ public class UserController {
     @ResponseBody
     public String list() {
 
+
+        User user = userService.getUser(1);
+        System.out.println(user.toString());
+        System.out.println(user.getAddress());
         List<String> list = Arrays.asList("1","2","3");
         List<String> list1 = list.stream().filter((String str)->
                 str.equals("2")).collect(Collectors.toList());
