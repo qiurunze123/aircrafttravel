@@ -22,6 +22,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+
     @RequestMapping(value="/list", produces="text/html")
     @ResponseBody
     public String list() {
