@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/user")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+//    @Autowired
+//    private UserService userService;
 
 
     @RequestMapping(value="/list", produces="text/html")
@@ -28,9 +28,9 @@ public class UserController {
     public String list() {
 
 
-        User user = userService.getUser(1);
-        System.out.println(user.toString());
-        System.out.println(user.getAddress());
+//        User user = userService.getUser(1);
+//        System.out.println(user.toString());
+//        System.out.println(user.getAddress());
         List<String> list = Arrays.asList("1","2","3");
         List<String> list1 = list.stream().filter((String str)->
                 str.equals("2")).collect(Collectors.toList());

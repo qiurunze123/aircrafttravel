@@ -1,0 +1,35 @@
+spring:
+  thymeleaf:
+    cache: false # 开发时关闭缓存,不然没法看到实时页面
+    mode: HTML5 # 用非严格的 HTML
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+    prefix: classpath:/templates/
+    check-template-location : true
+    suffix: .html
+  redis:
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        max-wait: -1ms
+        min-idle: 0
+    cluster:
+      nodes: 112.126.97.242:7001,112.126.97.242:7002
+    password: passwd123
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+datasource:
+    username: root
+    password: aixiaoju11
+    url: jdbc:mysql://112.126.97.242:3306/miaosha?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+
+mybatis:
+  mapper-locations: com/travel/function/mapper/*.xml
+  type-aliases-package: com.travel.function.entity

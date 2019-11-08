@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.travel.function.dao.CustomerInfDao" >
+  <resultMap id="BaseResultMap" type="com.travel.function.entity.CustomerInf" >
+    <id column="customer_inf_id" property="customerInfId" jdbcType="INTEGER" />
+    <result column="customer_id" property="customerId" jdbcType="INTEGER" />
+    <result column="customer_name" property="customerName" jdbcType="VARCHAR" />
+    <result column="identity_card_type" property="identityCardType" jdbcType="TINYINT" />
+    <result column="identity_card_no" property="identityCardNo" jdbcType="VARCHAR" />
+    <result column="mobile_phone" property="mobilePhone" jdbcType="INTEGER" />
+    <result column="customer_email" property="customerEmail" jdbcType="VARCHAR" />
+    <result column="gender" property="gender" jdbcType="CHAR" />
+    <result column="user_point" property="userPoint" jdbcType="INTEGER" />
+    <result column="register_time" property="registerTime" jdbcType="TIMESTAMP" />
+    <result column="birthday" property="birthday" jdbcType="TIMESTAMP" />
+    <result column="customer_level" property="customerLevel" jdbcType="TINYINT" />
+    <result column="user_money" property="userMoney" jdbcType="DECIMAL" />
+    <result column="modified_time" property="modifiedTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    customer_inf_id, customer_id, customer_name, identity_card_type, identity_card_no, 
+    mobile_phone, customer_email, gender, user_point, register_time, birthday, customer_level, 
+    user_money, modified_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from customer_inf
+    where customer_inf_id = #{customerInfId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from customer_inf
+    where customer_inf_id = #{customerInfId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insertSelective" parameterType="com.travel.function.entity.CustomerInf" >
+    insert into customer_inf
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="customerInfId != null" >
+        customer_inf_id,
+      </if>
+      <if test="customerId != null" >
+        customer_id,
+      </if>
+      <if test="customerName != null" >
+        customer_name,
+      </if>
+      <if test="identityCardType != null" >
+        identity_card_type,
+      </if>
+      <if test="identityCardNo != null" >
+        identity_card_no,
+      </if>
+      <if test="mobilePhone != null" >
+        mobile_phone,
+      </if>
+      <if test="customerEmail != null" >
+        customer_email,
+      </if>
+      <if test="gender != null" >
+        gender,
+      </if>
+      <if test="userPoint != null" >
+        user_point,
+      </if>
+      <if test="registerTime != null" >
+        register_time,
+      </if>
+      <if test="birthday != null" >
+        birthday,
+      </if>
+      <if test="customerLevel != null" >
+        customer_level,
+      </if>
+      <if test="userMoney != null" >
+        user_money,
+      </if>
+      <if test="modifiedTime != null" >
+        modified_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="customerInfId != null" >
+        #{customerInfId,jdbcType=INTEGER},
+      </if>
+      <if test="customerId != null" >
+        #{customerId,jdbcType=INTEGER},
+      </if>
+      <if test="customerName != null" >
+        #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="identityCardType != null" >
+        #{identityCardType,jdbcType=TINYINT},
+      </if>
+      <if test="identityCardNo != null" >
+        #{identityCardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilePhone != null" >
+        #{mobilePhone,jdbcType=INTEGER},
+      </if>
+      <if test="customerEmail != null" >
+        #{customerEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null" >
+        #{gender,jdbcType=CHAR},
+      </if>
+      <if test="userPoint != null" >
+        #{userPoint,jdbcType=INTEGER},
+      </if>
+      <if test="registerTime != null" >
+        #{registerTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="birthday != null" >
+        #{birthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="customerLevel != null" >
+        #{customerLevel,jdbcType=TINYINT},
+      </if>
+      <if test="userMoney != null" >
+        #{userMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="modifiedTime != null" >
+        #{modifiedTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.travel.function.entity.CustomerInf" >
+    update customer_inf
+    <set >
+      <if test="customerId != null" >
+        customer_id = #{customerId,jdbcType=INTEGER},
+      </if>
+      <if test="customerName != null" >
+        customer_name = #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="identityCardType != null" >
+        identity_card_type = #{identityCardType,jdbcType=TINYINT},
+      </if>
+      <if test="identityCardNo != null" >
+        identity_card_no = #{identityCardNo,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilePhone != null" >
+        mobile_phone = #{mobilePhone,jdbcType=INTEGER},
+      </if>
+      <if test="customerEmail != null" >
+        customer_email = #{customerEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null" >
+        gender = #{gender,jdbcType=CHAR},
+      </if>
+      <if test="userPoint != null" >
+        user_point = #{userPoint,jdbcType=INTEGER},
+      </if>
+      <if test="registerTime != null" >
+        register_time = #{registerTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="birthday != null" >
+        birthday = #{birthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="customerLevel != null" >
+        customer_level = #{customerLevel,jdbcType=TINYINT},
+      </if>
+      <if test="userMoney != null" >
+        user_money = #{userMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="modifiedTime != null" >
+        modified_time = #{modifiedTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where customer_inf_id = #{customerInfId,jdbcType=INTEGER}
+  </update>
+</mapper>
