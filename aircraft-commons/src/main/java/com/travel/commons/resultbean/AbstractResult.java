@@ -29,6 +29,19 @@ public class AbstractResult {
         return this;
     }
 
+    public AbstractResult withErrorCodeAndMessage(ResultStatus status) {
+        this.status = status;
+        this.code = status.getCode();
+        this.message = status.getMessage();
+        return this;
+    }
+
+    public AbstractResult withErrorArgs(int code ,String msg ,Object... args ) {
+        this.code = code;
+        this.message = String.format(msg,args);
+        return this;
+    }
+
     public AbstractResult withError(String message) {
         this.status = ResultStatus.SYSTEM_ERROR;
         this.message = message;

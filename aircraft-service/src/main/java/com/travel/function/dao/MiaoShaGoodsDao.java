@@ -2,7 +2,7 @@ package com.travel.function.dao;
 
 import com.travel.function.entity.MiaoShaGoods;
 
-public interface MiaoShaGoodsMapper {
+public interface MiaoShaGoodsDao {
     int deleteByPrimaryKey(Long id);
 
     int insert(MiaoShaGoods record);

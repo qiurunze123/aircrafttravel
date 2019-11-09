@@ -125,4 +125,10 @@
       login_count = #{loginCount,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <select id="getByName" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select     <include refid="Base_Column_List" />
+    from miaosha_user where nickname = #{nickname,jdbcType=VARCHAR}
+  </select>
+
 </mapper>

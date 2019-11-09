@@ -17,6 +17,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Date;
+import java.util.function.Predicate;
 
 /**
  * @author 邱润泽 bullock
@@ -71,7 +72,10 @@ public class AirCraftTest {
     @Test
     public void md5Test(){
 
-       String passwd =  MD5Util.inputPassToDbPass("111111","1a2b3c4d");
-       System.out.println(passwd);
+        if(Predicate.isEqual("1").equals("1")){
+            System.out.println("======================");
+        }
+        String passwd =  MD5Util.inputPassToDbPass("123456","1a2b3c4d");
+        System.out.println(passwd);
     }
 }

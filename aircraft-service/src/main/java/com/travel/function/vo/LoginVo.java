@@ -1,5 +1,6 @@
 package com.travel.function.vo;
 
+import com.travel.commons.valiadator.CheckMobile;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class LoginVo {
     @NotNull
+    @CheckMobile
     private String mobile ;
 
     @NotNull

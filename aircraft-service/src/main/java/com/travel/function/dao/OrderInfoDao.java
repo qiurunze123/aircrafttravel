@@ -2,7 +2,7 @@ package com.travel.function.dao;
 
 import com.travel.function.entity.OrderInfo;
 
-public interface OrderInfoMapper {
+public interface OrderInfoDao {
     int deleteByPrimaryKey(Long id);
 
     int insert(OrderInfo record);

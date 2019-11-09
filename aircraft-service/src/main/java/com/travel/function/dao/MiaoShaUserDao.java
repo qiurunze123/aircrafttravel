@@ -14,4 +14,7 @@ public interface MiaoShaUserDao {
     int updateByPrimaryKeySelective(MiaoShaUser record);
 
     int updateByPrimaryKey(MiaoShaUser record);
+
+    MiaoShaUser getByName(String name);
+
 }
