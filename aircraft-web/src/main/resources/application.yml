@@ -11,7 +11,7 @@ spring:
   redis:
       host: 112.126.97.242
       port: 6379
-      password: redispasswd11
+      password: xxxxxx
       jedis:
         pool:
           max-wait: -1
@@ -35,8 +35,8 @@ server:
 
 datasource:
     username: root
-    password: aixiaoju11
-    url: jdbc:mysql://xxxx:3306/miaosha?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
+    password: xxxxxx
+    url: jdbc:mysql://112.126.97.242:3306/miaosha?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.jdbc.Driver
 
