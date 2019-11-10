@@ -93,7 +93,6 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
             return null;
         }
         MiaoShaUser user = (MiaoShaUser) redisClient.get(MiaoShaUserKey.token,token,MiaoShaUser.class);
-
         if(user!=null){
             addCookie(response,token,user);
         }
