@@ -9,15 +9,25 @@ spring:
     check-template-location : true
     suffix: .html
   redis:
-    lettuce:
-      pool:
-        max-active: 8
-        max-idle: 8
-        max-wait: -1ms
-        min-idle: 0
-    cluster:
-      nodes: 112.126.97.242:7001,112.126.97.242:7002
-    password: passwd123
+      host: 112.126.97.242
+      port: 6379
+      password: redispasswd
+      jedis:
+        pool:
+          max-wait: -1
+          max-idle: 8
+          min-idle: 0
+      timeout: 0
+#    lettuce:
+#      pool:
+#        max-active: 8
+#        max-idle: 8
+#        max-wait: -1ms
+#        min-idle: 0
+#    cluster:
+#      nodes: 112.126.97.242:7001,112.126.97.242:7002
+#    password: passwd123
+
 server:
   port: 8080
   servlet:

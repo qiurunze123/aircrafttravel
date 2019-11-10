@@ -1,10 +1,16 @@
 package com.travel.function.entity;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Date;
 
-@Data
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class MiaoShaUser {
     private Long id;
 
@@ -21,4 +27,18 @@ public class MiaoShaUser {
     private Date lastLoginDate;
 
     private Integer loginCount;
+
+    @Override
+    public String toString() {
+        return "Logininfo{" +
+                "id=" + id +
+                ", nickname='" + nickname + '\'' +
+                ", password='" + password + '\'' +
+                ", salt='" + salt + '\'' +
+                ", head='" + head + '\'' +
+                ", registerDate=" + registerDate +
+                ", lastLoginDate=" + lastLoginDate +
+                ", loginCount=" + loginCount +
+                '}';
+    }
 }

@@ -29,4 +29,6 @@ public class CustomerConstant {
             return message;
         }
     }
+
+    public static final String COOKIE_NAME_TOKEN = "token" ;
 }

@@ -33,6 +33,7 @@ public class GlobleExceptionHandler {
             //找到第一个错误
             ObjectError error = errorList.stream().findFirst().get();
             String msg = error.getDefaultMessage();
+            logger.error("======异常信息为==== error:{}",msg);
             resultGeekQ.withErrorArgs(ResultStatus.BIND_ERROR.getCode(), msg, error);
         }else{
             resultGeekQ.withErrorCodeAndMessage(ResultStatus.SYSTEM_ERROR);

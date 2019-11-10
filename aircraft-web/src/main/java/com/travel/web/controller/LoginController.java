@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import static com.travel.commons.enums.ResultStatus.MOBILE_ERROR;
@@ -37,11 +38,11 @@ public class LoginController {
     }
     @RequestMapping("/do_login")
     @ResponseBody
-    public ResultGeekQ<String> tologin(@Valid LoginVo loginVo) {
+    public ResultGeekQ<String> tologin(@Valid LoginVo loginVo, HttpServletResponse response) {
         logger.info("登录开始 start! loginvo:{}", JSON.toJSON(loginVo));
         ResultGeekQ resultGeekQ = ResultGeekQ.build();
         try {
-            ResultGeekQ result = miaoShaUserService.login(loginVo);
+            ResultGeekQ result = miaoShaUserService.login(response,loginVo);
             if(!AbstractResult.isSuccess(result)){
                 resultGeekQ.withError(result.getCode(),result.getMessage());
                 return resultGeekQ;
@@ -51,4 +52,6 @@ public class LoginController {
         }
         return resultGeekQ;
     }
+
+
 }
