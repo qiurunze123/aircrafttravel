@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.function.Predicate;
 
@@ -96,5 +97,13 @@ public class AirCraftTest {
     @Test
     public void redisNullTest(){
         System.out.println((MiaoShaUser)null);
+    }
+
+
+    @Test
+    public void lambdaTest(){
+        String[] strings = {"1","2"};
+        String  a =  Arrays.stream(strings).filter(cookie -> cookie.equals("1")).findFirst().get();
+        System.out.println("==================="+a+"====================");
     }
 }

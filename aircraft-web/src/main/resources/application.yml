@@ -35,7 +35,7 @@ server:
 
 datasource:
     username: root
-    password: aixiaoju11
+    password: xxxxx
     url: jdbc:mysql://112.126.97.242:3306/miaosha?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.jdbc.Driver
