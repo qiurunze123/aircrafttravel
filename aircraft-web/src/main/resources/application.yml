@@ -1,4 +1,10 @@
 spring:
+  datasource:
+    username: root
+    password: xxxxxx
+    url: jdbc:mysql://112.126.97.242:3306/miaosha?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
   thymeleaf:
     cache: false # 开发时关闭缓存,不然没法看到实时页面
     mode: HTML5 # 用非严格的 HTML
@@ -33,12 +39,6 @@ server:
   servlet:
     context-path: /
 
-datasource:
-    username: root
-    password: xxxxxx
-    url: jdbc:mysql://112.126.97.242:3306/miaosha?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
-    type: com.alibaba.druid.pool.DruidDataSource
-    driver-class-name: com.mysql.jdbc.Driver
 
 mybatis:
   mapper-locations: com/travel/function/mapper/*.xml
