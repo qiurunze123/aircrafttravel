@@ -61,7 +61,7 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 
     private String getCookieValue(HttpServletRequest request, String cookieNameToken) {
         Cookie[] cookies = request.getCookies();
-        Cookie cookieValue =  Arrays.stream(cookies).filter(cookie -> cookie.equals(cookieNameToken)).findFirst().get();
+        Cookie cookieValue =  Arrays.stream(cookies).filter(cookie -> cookie.getName().equals(cookieNameToken)).findFirst().get();
         return cookieValue.getValue();
     };
 

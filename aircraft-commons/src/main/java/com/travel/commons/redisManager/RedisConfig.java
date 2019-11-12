@@ -35,8 +35,8 @@ public class RedisConfig {
         log.info("redis地址：" + host + ":" + port);
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
         jedisPoolConfig.setMaxIdle(poolMaxIdle);
-        jedisPoolConfig.setMaxWaitMillis(poolMaxWait);
-        jedisPoolConfig.setMinIdle(poolminIdle);
+        jedisPoolConfig.setMaxWaitMillis(1000);
+        jedisPoolConfig.setMinIdle(-1);
         // 是否启用pool的jmx管理功能, 默认true
         jedisPoolConfig.setJmxEnabled(true);
         JedisPool jedisPool = new JedisPool(jedisPoolConfig, host, port, timeout, password);

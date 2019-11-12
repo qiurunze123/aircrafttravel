@@ -16,6 +16,7 @@ public class ResultGeekQ<T> extends AbstractResult implements Serializable {
     protected ResultGeekQ(ResultStatus status) {
         super(status);
     }
+
     public static <T> ResultGeekQ<T> build() {
         return new ResultGeekQ(ResultStatus.SUCCESS, null);
     }

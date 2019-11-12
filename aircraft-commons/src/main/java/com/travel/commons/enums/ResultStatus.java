@@ -52,6 +52,11 @@ public enum ResultStatus {
     ORDER_NOT_EXIST(60001,"订单不存在"),
 
     /**
+     * 商品不存在
+     */
+    GOOD_NOT_EXIST(50001,"订单不存在"),
+
+    /**
      * 秒杀模块
      */
     MIAO_SHA_OVER(40001,"商品已经秒杀完毕"),

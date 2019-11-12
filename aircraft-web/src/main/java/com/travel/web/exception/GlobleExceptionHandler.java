@@ -1,10 +1,8 @@
 package com.travel.web.exception;
 
 import com.travel.commons.enums.ResultStatus;
-import com.travel.commons.resultbean.AbstractResult;
 import com.travel.commons.resultbean.ResultGeekQ;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -20,12 +18,13 @@ import java.util.List;
  */
 @ControllerAdvice
 @ResponseBody
+@Slf4j
 public class GlobleExceptionHandler {
 
-    public static Logger logger = LoggerFactory.getLogger(GlobleExceptionHandler.class);
     @ExceptionHandler(value = Exception.class)
     public ResultGeekQ<String> exceptionHandler(HttpServletRequest request,Exception e){
-        logger.error("======== 拦截到异常请注意！==========");
+        log.error("======== 拦截到异常请注意！==========");
+        e.printStackTrace();
         ResultGeekQ resultGeekQ = ResultGeekQ.build();
         if(e instanceof BindException){
             BindException ex = (BindException)e;
@@ -33,7 +32,7 @@ public class GlobleExceptionHandler {
             //找到第一个错误
             ObjectError error = errorList.stream().findFirst().get();
             String msg = error.getDefaultMessage();
-            logger.error("======异常信息为==== error:{}",msg);
+            log.error("======异常信息为==== error:{}",msg);
             resultGeekQ.withErrorArgs(ResultStatus.BIND_ERROR.getCode(), msg, error);
         }else{
             resultGeekQ.withErrorCodeAndMessage(ResultStatus.SYSTEM_ERROR);

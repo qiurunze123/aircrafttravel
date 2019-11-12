@@ -14,15 +14,17 @@ spring:
     prefix: classpath:/templates/
     check-template-location : true
     suffix: .html
+  resources:
+      static-locations: classpath:/static/, classpath:/templates/
   redis:
       host: 112.126.97.242
       port: 6379
       password: xxxxxx
       jedis:
         pool:
+          max-idle: 30
+          min-idle: 10
           max-wait: -1
-          max-idle: 8
-          min-idle: 0
       timeout: 0
 #    lettuce:
 #      pool:

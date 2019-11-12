@@ -10,6 +10,8 @@ import com.travel.function.dao.MiaoShaUserDao;
 import com.travel.function.entity.MiaoShaUser;
 import com.travel.function.service.MiaoShaUserService;
 import com.travel.function.vo.LoginVo;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -24,7 +26,9 @@ import static com.travel.commons.enums.CustomerConstant.COOKIE_NAME_TOKEN;
  * @date 2019/11/9
  */
 @Service
+@Slf4j
 public class MiaoShaUserServiceImpl implements MiaoShaUserService {
+
 
     @Autowired
     private MiaoShaUserDao miaoShaUserDao;
@@ -67,6 +71,7 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
             String token = UUIDUtil.getUUid();
             addCookie(response, token, user);
         } catch (Exception e) {
+            log.error("登陆发生错误 error:{}",e);
             resultGeekQ.withErrorCodeAndMessage(ResultStatus.SYSTEM_ERROR);
             return resultGeekQ;
         }

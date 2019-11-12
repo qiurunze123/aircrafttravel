@@ -9,14 +9,17 @@ import com.travel.function.entity.CustomerLogin;
 import com.travel.function.entity.MiaoShaUser;
 import com.travel.function.service.CustomerService;
 import com.travel.function.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.function.Predicate;
@@ -28,6 +31,7 @@ import java.util.function.Predicate;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @EnableAutoConfiguration
+@Slf4j
 public class AirCraftTest {
 
     @Autowired
@@ -102,8 +106,20 @@ public class AirCraftTest {
 
     @Test
     public void lambdaTest(){
+
         String[] strings = {"1","2"};
         String  a =  Arrays.stream(strings).filter(cookie -> cookie.equals("1")).findFirst().get();
         System.out.println("==================="+a+"====================");
+    }
+
+    @Test
+    public void timeTest(){
+
+
+        LocalDate localDate = LocalDate.now();
+        Timestamp timestamp= Timestamp.valueOf(LocalDateTime.now());
+        System.out.println(timestamp.getTime()+"=====================");
+        System.out.println(System.currentTimeMillis()+"==================");
+
     }
 }
