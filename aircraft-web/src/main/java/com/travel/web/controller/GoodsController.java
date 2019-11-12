@@ -36,9 +36,8 @@ public class GoodsController {
     @Autowired
     private GoodsService goodsService;
 
-    @RequestMapping(value = "/detail/{goodsId}")
-    @ResponseBody
-    public ResultGeekQ<GoodsDetailVo>  goodsDetail(Model model, HttpServletResponse response,MiaoShaUser user,
+    @RequestMapping(value = "/to_detail/{goodsId}")
+    public String goodsDetail(Model model, HttpServletResponse response,MiaoShaUser user,
                               @PathVariable(required = true) String goodsId) {
 
         ResultGeekQ<GoodsDetailVo> resultGeekQ = ResultGeekQ.build();
@@ -67,12 +66,16 @@ public class GoodsController {
             vo.setUser(user);
             vo.setRemainSeconds(remainSeconds);
             vo.setMiaoshaStatus(miaoshaStatus);
-            resultGeekQ.setData(vo);
+            model.addAttribute("goods",goods);
+            model.addAttribute("miaoshaStatus",miaoshaStatus);
+            model.addAttribute("remainSeconds",remainSeconds);
+            model.addAttribute("user",user);
+//            resultGeekQ.setData(vo);
         } catch (Exception e) {
             log.error("查询商品明细失败 error:{}",e);
             resultGeekQ.withErrorCodeAndMessage(ResultStatus.GOOD_NOT_EXIST);
         }
-        return resultGeekQ ;
+        return "goods_detail" ;
     }
 
     @RequestMapping(value = "/to_list")
