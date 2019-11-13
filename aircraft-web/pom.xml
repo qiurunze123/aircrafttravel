@@ -15,7 +15,7 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <jackson.version>2.9.6</jackson.version>
+        <jackson.version>2.10.1</jackson.version>
     </properties>
 
     <dependencies>
