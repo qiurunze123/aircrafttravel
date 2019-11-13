@@ -21,9 +21,9 @@ public class OrderInfo {
 
     private BigDecimal goodsPrice;
 
-    private Byte orderChannel;
+    private Integer orderChannel;
 
-    private Byte status;
+    private Integer status;
 
     private Date createDate;
 

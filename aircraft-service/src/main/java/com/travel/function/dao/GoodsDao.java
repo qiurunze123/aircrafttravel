@@ -1,7 +1,9 @@
 package com.travel.function.dao;
 
 import com.travel.function.entity.Goods;
+import com.travel.function.entity.MiaoShaGoods;
 import com.travel.function.vo.GoodsVo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -18,4 +20,7 @@ public interface GoodsDao {
 
     GoodsVo goodsVoByGoodsId(Long goodId);
 
+    GoodsVo getGoodsVoByGoodsId(@Param("goodsId") long goodsId);
+
+    public int reduceStock(MiaoShaGoods miaoShaGoods);
 }

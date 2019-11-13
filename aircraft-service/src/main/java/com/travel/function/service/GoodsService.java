@@ -12,4 +12,8 @@ public interface GoodsService {
     public List<GoodsVo> goodsVoList();
 
     public GoodsVo goodsVoByGoodId(Long goodId);
+
+    public GoodsVo getGoodsVoByGoodsId(long goodsId);
+
+    public boolean reduceStock(GoodsVo goods);
 }
