@@ -37,7 +37,7 @@
         <jedis.version>2.9.0</jedis.version>
         <redission.version>3.11.1</redission.version>
         <validation.version>2.1.6.RELEASE</validation.version>
-        <jackson.version>2.9.6</jackson.version>
+        <jackson.version>2.10.1</jackson.version>
         <thremf.version>2.1.1.RELEASE</thremf.version>
         <alibaba.version>1.2.58</alibaba.version>
 
