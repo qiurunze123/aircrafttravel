@@ -1,14 +1,6 @@
 package com.travel.commons.redisManager;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisCallback;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import org.springframework.stereotype.Service;
 
 /**
  * @author 邱润泽 bullock

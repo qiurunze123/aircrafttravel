@@ -4,7 +4,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication(scanBasePackages = "com.travel")
+@SpringBootApplication(scanBasePackages = {"com.travel.function","com.travel"})
 @MapperScan("com.travel.function.dao")
 public class AirCraftApplication {
 

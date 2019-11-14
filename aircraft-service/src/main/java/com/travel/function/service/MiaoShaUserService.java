@@ -1,6 +1,5 @@
 package com.travel.function.service;
 
-import com.travel.commons.enums.ResultStatus;
 import com.travel.commons.resultbean.ResultGeekQ;
 import com.travel.function.entity.MiaoShaUser;
 import com.travel.function.vo.LoginVo;
