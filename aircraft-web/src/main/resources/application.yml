@@ -27,7 +27,7 @@ spring:
           max-wait: -1
       timeout: 0
 #    lettuce:
-#      pool:
+#      pool:登陆发生错误
 #        max-active: 8
 #        max-idle: 8
 #        max-wait: -1ms
@@ -45,3 +45,8 @@ server:
 mybatis:
   mapper-locations: com/travel/function/mapper/*.xml
   type-aliases-package: com.travel.function.entity
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+pageCache:
+  enable: true
