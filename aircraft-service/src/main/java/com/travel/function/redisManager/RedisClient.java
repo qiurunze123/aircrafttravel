@@ -74,6 +74,59 @@ public class RedisClient<T> {
         }
     }
 
+    /**
+     * <p>
+     * 通过key 对value进行加值+1操作,当value不是int类型时会返回错误,当key不存在是则value为1
+     * </p>
+     *
+     * @param key
+     * @return 加值后的结果
+     */
+    public Long incr(String key) {
+        Jedis jedis = null;
+        Long res = null;
+        try {
+            jedis = jedisPool.getResource();
+            res = jedis.incr(key);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        } finally {
+            returnToPool(jedis);
+        }
+        return res;
+    }
+
+    /**
+     * 增加值
+     * */
+    public <T> Long incr(RedisKeyPrefix prefix, String key) {
+        Jedis jedis = null;
+        try {
+            jedis =  jedisPool.getResource();
+            //生成真正的key
+            String realKey  = prefix.getPrefix() + key;
+            return  jedis.incr(realKey);
+        }finally {
+            returnToPool(jedis);
+        }
+    }
+
+    /**
+     * 删除
+     * */
+    public boolean delete(RedisKeyPrefix prefix, String key) {
+        Jedis jedis = null;
+        try {
+            jedis =  jedisPool.getResource();
+            //生成真正的key
+            String realKey  = prefix.getPrefix() + key;
+            long ret =  jedis.del(realKey);
+            return ret > 0;
+        }finally {
+            returnToPool(jedis);
+        }
+    }
+
     public static <T> T stringToBean(String str, Class<T> clazz) {
         if(str == null || str.length() <= 0 || clazz == null) {
             return null;
