@@ -1,4 +1,4 @@
-package com.travel.commons.redisManager;
+package com.travel.function.redisManager;
 
 /**
  * @author 邱润泽 bullock

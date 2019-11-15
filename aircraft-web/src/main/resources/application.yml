@@ -19,13 +19,32 @@ spring:
   redis:
       host: 112.126.97.242
       port: 6379
-      password: xxxxxx
+      password: xxxxx
       jedis:
         pool:
           max-idle: 30
           min-idle: 10
           max-wait: -1
       timeout: 0
+  rabbitmq:
+    host: 112.126.97.242
+    password: xxx
+    username: xxx
+    port: 5672
+    template:
+      retry:
+        enabled: true
+        initial-interval: 1000
+        max-attempts: 3
+        max-interval: 100000
+        multiplier: 1
+    listener:
+      simple:
+        default-requeue-rejected: true
+        auto-startup: true
+        prefetch: 1
+        max-concurrency: 10
+        concurrency: 10
 #    lettuce:
 #      pool:登陆发生错误
 #        max-active: 8

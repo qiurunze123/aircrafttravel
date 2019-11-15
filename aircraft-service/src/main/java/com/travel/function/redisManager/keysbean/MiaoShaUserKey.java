@@ -1,6 +1,6 @@
-package com.travel.commons.redisManager.keysbean;
+package com.travel.function.redisManager.keysbean;
 
-import com.travel.commons.redisManager.BasePrefix;
+import com.travel.function.redisManager.BasePrefix;
 
 /**
  * @auther 邱润泽 bullock

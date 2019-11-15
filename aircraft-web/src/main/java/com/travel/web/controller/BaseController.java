@@ -1,8 +1,8 @@
 package com.travel.web.controller;
 
-import com.travel.commons.redisManager.RedisClient;
-import com.travel.commons.redisManager.RedisKeyPrefix;
-import com.travel.commons.redisManager.RedisService;
+import com.travel.function.redisManager.RedisClient;
+import com.travel.function.redisManager.RedisKeyPrefix;
+import com.travel.function.redisManager.RedisService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

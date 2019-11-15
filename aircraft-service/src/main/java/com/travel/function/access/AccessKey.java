@@ -1,6 +1,6 @@
-package com.geekq.miaosha.access;
+package com.travel.function.access;
 
-import com.geekq.miaosha.redis.BasePrefix;
+import com.travel.function.redisManager.BasePrefix;
 
 public class AccessKey extends BasePrefix {
 

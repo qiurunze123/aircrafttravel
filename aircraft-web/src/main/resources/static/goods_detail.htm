@@ -197,8 +197,11 @@ $(function(){
 function getDetail(){
 	var goodsId = g_getQueryString("goodsId");
 	$.ajax({
-		url:"/goods/detail/"+goodsId,
+		url:"/goods/to_detail",
 		type:"GET",
+        data:{
+            goodsId:goodsId
+        },
 		success:function(data){
 			if(data.code == 0){
 				render(data.data);
@@ -206,7 +209,7 @@ function getDetail(){
 				layer.msg(data.msg);
 			}
 		},
-		error:function(){
+		error:function(data){
 			layer.msg("客户端请求有误");
 		}
 	});

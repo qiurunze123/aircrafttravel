@@ -1,4 +1,4 @@
-package com.imooc.miaosha.rabbitmq;
+package com.travel.function.rabbitmq;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +14,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class MQConfig {
-	
+
+	//记得声明队列否则不存在
 	public static final String MIAOSHA_QUEUE = "miaosha.queue";
 	public static final String QUEUE = "queue";
 	public static final String TOPIC_QUEUE1 = "topic.queue1";
@@ -37,7 +38,7 @@ public class MQConfig {
 	 * */
 	@Bean
 	public Queue topicQueue1() {
-		return new Queue(TOPIC_QUEUE1, true);
+		return new Queue(MIAOSHA_QUEUE, true);
 	}
 	@Bean
 	public Queue topicQueue2() {

@@ -1,8 +1,8 @@
 package com.travel.web;
 
 import com.alibaba.fastjson.JSON;
-import com.travel.commons.redisManager.RedisClient;
-import com.travel.commons.redisManager.RedisService;
+import com.travel.function.redisManager.RedisClient;
+import com.travel.function.redisManager.RedisService;
 import com.travel.commons.utils.MD5Util;
 import com.travel.commons.utils.UUIDUtil;
 import com.travel.function.entity.CustomerLogin;

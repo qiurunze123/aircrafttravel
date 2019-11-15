@@ -1,4 +1,4 @@
-package com.travel.commons.redisManager;
+package com.travel.function.redisManager;
 
 public abstract class BasePrefix implements  RedisKeyPrefix {
 

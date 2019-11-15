@@ -1,12 +1,12 @@
-package com.geekq.miaosha.access;
+package com.travel.function.access;
 
 import com.alibaba.fastjson.JSON;
-import com.geekq.miaosha.common.enums.ResultStatus;
-import com.geekq.miaosha.common.resultbean.ResultGeekQ;
-import com.geekq.miaosha.controller.LoginController;
-import com.geekq.miaosha.domain.MiaoshaUser;
-import com.geekq.miaosha.redis.RedisService;
-import com.geekq.miaosha.service.MiaoShaUserService;
+import com.travel.commons.enums.ResultStatus;
+import com.travel.function.redisManager.RedisClient;
+import com.travel.function.redisManager.RedisService;
+import com.travel.commons.resultbean.ResultGeekQ;
+import com.travel.function.entity.MiaoShaUser;
+import com.travel.function.service.MiaoShaUserService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,12 +19,15 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
+import java.util.Arrays;
 
-import static com.geekq.miaosha.common.enums.ResultStatus.ACCESS_LIMIT_REACHED;
-import static com.geekq.miaosha.common.enums.ResultStatus.SESSION_ERROR;
+import static com.travel.commons.enums.CustomerConstant.COOKIE_NAME_TOKEN;
+import static com.travel.commons.enums.ResultStatus.ACCESS_LIMIT_REACHED;
+import static com.travel.commons.enums.ResultStatus.SESSION_ERROR;
+
 
 @Service
-public class AccessInterceptor  extends HandlerInterceptorAdapter{
+public class AccessInterceptor  extends HandlerInterceptorAdapter {
 
 	private static Logger logger = LoggerFactory.getLogger(AccessInterceptor.class);
 
@@ -32,7 +35,7 @@ public class AccessInterceptor  extends HandlerInterceptorAdapter{
 	MiaoShaUserService userService;
 
 	@Autowired
-	RedisService redisService;
+	RedisClient redisService;
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -43,11 +46,7 @@ public class AccessInterceptor  extends HandlerInterceptorAdapter{
 		if(handler instanceof HandlerMethod) {
 			logger.info("打印拦截方法handler ：{} ",handler);
 			HandlerMethod hm = (HandlerMethod)handler;
-			//方便mybatis 测试
-//			if(hm.getMethod().getName().startsWith("test")){
-//				return true;
-//			}
-			MiaoshaUser user = getUser(request, response);
+			MiaoShaUser user = getUser(request, response);
 			UserContext.setUser(user);
 			AccessLimit accessLimit = hm.getMethodAnnotation(AccessLimit.class);
 			if(accessLimit == null) {
@@ -64,10 +63,9 @@ public class AccessInterceptor  extends HandlerInterceptorAdapter{
 				}
 				key += "_" + user.getNickname();
 			}else {
-				//do nothing
 			}
 			AccessKey ak = AccessKey.withExpire(seconds);
-			Integer count = redisService.get(ak, key, Integer.class);
+			Integer count = (Integer) redisService.get(ak, key, Integer.class);
 	    	if(count  == null) {
 	    		 redisService.set(ak, key, 1);
 	    	}else if(count < maxCount) {
@@ -95,9 +93,9 @@ public class AccessInterceptor  extends HandlerInterceptorAdapter{
 		out.close();
 	}
 
-	private MiaoshaUser getUser(HttpServletRequest request, HttpServletResponse response) {
-		String paramToken = request.getParameter(MiaoShaUserService.COOKIE_NAME_TOKEN);
-		String cookieToken = getCookieValue(request, MiaoShaUserService.COOKIE_NAME_TOKEN);
+	private MiaoShaUser getUser(HttpServletRequest request, HttpServletResponse response) {
+		String paramToken = request.getParameter(COOKIE_NAME_TOKEN);
+		String cookieToken = getCookieValue(request, COOKIE_NAME_TOKEN);
 		if(StringUtils.isEmpty(cookieToken) && StringUtils.isEmpty(paramToken)) {
 			return null;
 		}
@@ -105,17 +103,10 @@ public class AccessInterceptor  extends HandlerInterceptorAdapter{
 		return userService.getByToken(response, token);
 	}
 
-	private String getCookieValue(HttpServletRequest request, String cookiName) {
-		Cookie[]  cookies = request.getCookies();
-		if(cookies == null || cookies.length <= 0){
-			return null;
-		}
-		for(Cookie cookie : cookies) {
-			if(cookie.getName().equals(cookiName)) {
-				return cookie.getValue();
-			}
-		}
-		return null;
-	}
+	private String getCookieValue(HttpServletRequest request, String cookieNameToken) {
+		Cookie[] cookies = request.getCookies();
+		Cookie cookieValue =  Arrays.stream(cookies).filter(cookie -> cookie.getName().equals(cookieNameToken)).findFirst().get();
+		return cookieValue.getValue();
+	};
 
 }

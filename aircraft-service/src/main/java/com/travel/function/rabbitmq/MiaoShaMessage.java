@@ -1,20 +1,11 @@
-package com.geekq.miaosha.rabbitmq;
+package com.travel.function.rabbitmq;
 
-import com.geekq.miaosha.domain.MiaoshaUser;
 
-public class MiaoshaMessage {
-	private MiaoshaUser user;
-	private long goodsId;
-	public MiaoshaUser getUser() {
-		return user;
-	}
-	public void setUser(MiaoshaUser user) {
-		this.user = user;
-	}
-	public long getGoodsId() {
-		return goodsId;
-	}
-	public void setGoodsId(long goodsId) {
-		this.goodsId = goodsId;
-	}
+import com.travel.function.entity.MiaoShaUser;
+import lombok.Data;
+
+@Data
+public class MiaoShaMessage {
+    private MiaoShaUser user;
+    private long goodsId;
 }

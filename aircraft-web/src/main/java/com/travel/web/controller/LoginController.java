@@ -48,5 +48,4 @@ public class LoginController {
         return resultGeekQ;
     }
 
-
 }

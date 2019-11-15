@@ -1,4 +1,4 @@
-package com.geekq.miaosha.access;
+package com.travel.function.access;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

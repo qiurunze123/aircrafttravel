@@ -1,9 +1,13 @@
 package com.travel.function.service.impl;
 
+import com.travel.commons.utils.MD5Util;
+import com.travel.commons.utils.UUIDUtil;
 import com.travel.function.dao.MiaoShaOrderDao;
 import com.travel.function.entity.MiaoShaOrder;
 import com.travel.function.entity.MiaoShaUser;
 import com.travel.function.entity.OrderInfo;
+import com.travel.function.redisManager.RedisClient;
+import com.travel.function.redisManager.keysbean.MiaoshaKey;
 import com.travel.function.service.GoodsService;
 import com.travel.function.service.MiaoshaService;
 import com.travel.function.service.OrderService;
@@ -21,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class MiaoShaServiceImpl implements MiaoshaService {
 
 
-
     @Autowired
     GoodsService goodsService;
 
@@ -30,6 +33,9 @@ public class MiaoShaServiceImpl implements MiaoshaService {
 
     @Autowired
     MiaoShaOrderDao miaoShaOrderDao;
+
+    @Autowired
+    RedisClient redisClient;
 
     @Transactional
     @Override
@@ -50,4 +56,24 @@ public class MiaoShaServiceImpl implements MiaoshaService {
         return miaoShaOrderDao.getMiaoshaOrderByUserIdGoodsId(userId, goodsId);
     }
 
+    @Override
+    public String createMiaoshaPath(MiaoShaUser user, long goodsId) {
+        if (user == null || goodsId <= 0) {
+            return null;
+        }
+        String str = MD5Util.md5(UUIDUtil.getUUid() + "123456");
+        log.info("createMiaoShaPath str:{}", str);
+        redisClient.set(MiaoshaKey.getMiaoshaPath, "" + user.getNickname() + "_" + goodsId, str);
+        return str;
+    }
+
+    @Override
+    public boolean checkPath(MiaoShaUser user, long goodsId, String path) {
+        if (user == null || path == null) {
+            return false;
+        }
+        String pathOld = (String) redisClient.get(MiaoshaKey.getMiaoshaPath,
+                "" + user.getNickname() + "_" + goodsId, String.class);
+        return path.equals(pathOld);
+    }
 }

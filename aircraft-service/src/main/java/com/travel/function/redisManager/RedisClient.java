@@ -1,4 +1,4 @@
-package com.travel.commons.redisManager;
+package com.travel.function.redisManager;
 
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +55,20 @@ public class RedisClient<T> {
         }
     }
 
-
+    /**
+     * 减少值
+     * */
+    public <T> Long decr(RedisKeyPrefix prefix, String key) {
+        Jedis jedis = null;
+        try {
+            jedis =  jedisPool.getResource();
+            //生成真正的key
+            String realKey  = prefix.getPrefix() + key;
+            return  jedis.decr(realKey);
+        }finally {
+            returnToPool(jedis);
+        }
+    }
 
     /**
      * 获取当个对象

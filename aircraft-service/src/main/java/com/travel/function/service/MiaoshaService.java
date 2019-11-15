@@ -15,4 +15,8 @@ public interface MiaoshaService {
     public int insertMiaoshaOrder(MiaoShaOrder miaoshaOrder);
 
     public MiaoShaOrder getMiaoshaOrderByUserIdGoodsId(long userId, long goodsId);
+
+    String createMiaoshaPath(MiaoShaUser user, long goodsId);
+
+    boolean checkPath(MiaoShaUser user, long goodsId, String path);
 }

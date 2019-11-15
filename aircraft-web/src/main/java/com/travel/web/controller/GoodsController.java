@@ -1,32 +1,27 @@
 package com.travel.web.controller;
 
 import com.travel.commons.enums.ResultStatus;
-import com.travel.commons.redisManager.RedisClient;
-import com.travel.commons.redisManager.RedisService;
-import com.travel.commons.redisManager.keysbean.GoodsKey;
+import com.travel.function.redisManager.RedisClient;
+import com.travel.function.redisManager.keysbean.GoodsKey;
 import com.travel.commons.resultbean.ResultGeekQ;
-import com.travel.function.entity.Goods;
 import com.travel.function.entity.MiaoShaUser;
 import com.travel.function.service.GoodsService;
 import com.travel.function.service.MiaoShaUserService;
 import com.travel.function.vo.GoodsDetailVo;
 import com.travel.function.vo.GoodsVo;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.thymeleaf.context.WebContext;
-import org.thymeleaf.spring5.context.webflux.SpringWebFluxContext;
-import org.thymeleaf.spring5.view.ThymeleafViewResolver;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.util.List;
 
-import static com.travel.commons.enums.CustomerConstant.COOKIE_NAME_TOKEN;
+import static com.travel.commons.enums.CustomerConstant.MiaoShaStatus.MIAO_SHA_END;
+import static com.travel.commons.enums.CustomerConstant.MiaoShaStatus.MIAO_SHA_NOT_START;
 
 /**
  * @auther 邱润泽 bullock
@@ -44,48 +39,43 @@ public class GoodsController extends BaseController {
     private GoodsService goodsService;
     @Autowired
     private RedisClient redisService;
-    @Autowired
-    private ThymeleafViewResolver thymeleafViewResolver;
 
-    @RequestMapping(value = "/to_detail/{goodsId}")
+    @RequestMapping(value = "/to_detail")
     @ResponseBody
-    public String goodsDetail(Model model, HttpServletRequest request, HttpServletResponse response, MiaoShaUser user,
-                              @PathVariable(required = true) String goodsId) {
-        model.addAttribute("user", user);
-        //取缓存
-        String html = (String) redisService.get(GoodsKey.getGoodsDetail, "" + goodsId, String.class);
-        if (!StringUtils.isEmpty(html)) {
-            return html;
+    public ResultGeekQ<GoodsDetailVo> goodsDetail(MiaoShaUser user, String goodsId) {
+        ResultGeekQ resultGeekQ = ResultGeekQ.build();
+        try {
+            GoodsVo goods = goodsService.goodsVoByGoodId(Long.valueOf(goodsId));
+            long startAt = goods.getStartDate().getTime();
+            long endAt = goods.getEndDate().getTime();
+            long now = System.currentTimeMillis();
+            int miaoshaStatus = 0;
+            int remainSeconds = 0;
+            //秒杀还没开始，倒计时
+            if (now < startAt) {
+                miaoshaStatus = MIAO_SHA_NOT_START.getCode();
+                remainSeconds = (int) ((startAt - now) / 1000);
+                //秒杀已经结束
+            } else if (now > endAt) {
+                miaoshaStatus = MIAO_SHA_END.getCode();
+                remainSeconds = -1;
+                //秒杀进行中
+            } else {
+                miaoshaStatus = MIAO_SHA_END.getCode();
+                remainSeconds = 0;
+            }
+            GoodsDetailVo vo = new GoodsDetailVo();
+            vo.setGoods(goods);
+            vo.setUser(user);
+            vo.setRemainSeconds(remainSeconds);
+            vo.setMiaoshaStatus(miaoshaStatus);
+            resultGeekQ.setData(vo);
+        } catch (Exception e) {
+            log.error("秒杀明细请求失败 error:{}", e);
+            resultGeekQ.withErrorCodeAndMessage(ResultStatus.MIAOSHA_FAIL);
+            return resultGeekQ;
         }
-
-        GoodsVo goods = goodsService.goodsVoByGoodId(Long.valueOf(goodsId));
-        long startAt = goods.getStartDate().getTime();
-        long endAt = goods.getEndDate().getTime();
-        long now = System.currentTimeMillis();
-        int miaoshaStatus = 0;
-        int remainSeconds = 0;
-        //秒杀还没开始，倒计时
-        if (now < startAt) {
-            miaoshaStatus = 0;
-            remainSeconds = (int) ((startAt - now) / 1000);
-            //秒杀已经结束
-        } else if (now > endAt) {
-            miaoshaStatus = 2;
-            remainSeconds = -1;
-            //秒杀进行中
-        } else {
-            miaoshaStatus = 1;
-            remainSeconds = 0;
-        }
-        GoodsDetailVo vo = new GoodsDetailVo();
-        vo.setGoods(goods);
-        vo.setUser(user);
-        vo.setRemainSeconds(remainSeconds);
-        vo.setMiaoshaStatus(miaoshaStatus);
-        model.addAttribute("goods", goods);
-        model.addAttribute("miaoshaStatus", miaoshaStatus);
-        model.addAttribute("remainSeconds", remainSeconds);
-        return render(request, response, model, "goods_detail", GoodsKey.getGoodsDetail, "");
+        return resultGeekQ;
     }
 
     @RequestMapping(value = "/to_list")

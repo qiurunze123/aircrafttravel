@@ -1,16 +1,17 @@
-package com.geekq.miaosha.access;
+package com.travel.function.access;
 
-import com.geekq.miaosha.domain.MiaoshaUser;
+
+import com.travel.function.entity.MiaoShaUser;
 
 public class UserContext {
 	
-	private static ThreadLocal<MiaoshaUser> userHolder = new ThreadLocal<MiaoshaUser>();
+	private static ThreadLocal<MiaoShaUser> userHolder = new ThreadLocal<MiaoShaUser>();
 	
-	public static void setUser(MiaoshaUser user) {
+	public static void setUser(MiaoShaUser user) {
 		userHolder.set(user);
 	}
 	
-	public static MiaoshaUser getUser() {
+	public static MiaoShaUser getUser() {
 		return userHolder.get();
 	}
 

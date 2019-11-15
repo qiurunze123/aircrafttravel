@@ -1,4 +1,4 @@
-package com.travel.web.exception;
+package com.travel.function.exception;
 
 
 import com.travel.commons.enums.ResultStatus;

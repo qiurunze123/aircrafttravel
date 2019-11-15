@@ -1,25 +1,26 @@
 package com.travel.function.service.impl;
 
 import com.travel.commons.enums.ResultStatus;
-import com.travel.commons.redisManager.RedisClient;
-import com.travel.commons.redisManager.keysbean.MiaoShaUserKey;
+import com.travel.function.redisManager.RedisClient;
+import com.travel.function.redisManager.keysbean.MiaoShaUserKey;
 import com.travel.commons.resultbean.ResultGeekQ;
 import com.travel.commons.utils.MD5Util;
 import com.travel.commons.utils.UUIDUtil;
 import com.travel.function.dao.MiaoShaUserDao;
 import com.travel.function.entity.MiaoShaUser;
+import com.travel.function.exception.GlobleException;
 import com.travel.function.service.MiaoShaUserService;
 import com.travel.function.vo.LoginVo;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import java.util.UUID;
+
 import static com.travel.commons.enums.CustomerConstant.COOKIE_NAME_TOKEN;
+import static com.travel.commons.enums.ResultStatus.MOBILE_NOT_EXIST;
 
 /**
  * @auther 邱润泽 bullock
@@ -103,4 +104,25 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
         }
         return user;
     }
+
+
+    // http://blog.csdn.net/tTU1EvLDeLFq5btqiK/article/details/78693323
+    public boolean updatePassword(String token, String nickName, String formPass) {
+        //取user
+        MiaoShaUser user = getByName(nickName);
+        if(user == null) {
+            throw new GlobleException(MOBILE_NOT_EXIST);
+        }
+        //更新数据库
+        MiaoShaUser toBeUpdate = new MiaoShaUser();
+        toBeUpdate.setNickname(nickName);
+        toBeUpdate.setPassword(MD5Util.formPassToDBPass(formPass, user.getSalt()));
+        miaoShaUserDao.updateByPrimaryKeySelective(toBeUpdate);
+        //处理缓存
+        redisClient.delete(MiaoShaUserKey.getByNickName, ""+nickName);
+        user.setPassword(toBeUpdate.getPassword());
+        redisClient.set(MiaoShaUserKey.token, token, user);
+        return true;
+    }
+
 }
