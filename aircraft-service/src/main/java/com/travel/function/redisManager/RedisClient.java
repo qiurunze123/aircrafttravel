@@ -64,7 +64,9 @@ public class RedisClient<T> {
             jedis =  jedisPool.getResource();
             //生成真正的key
             String realKey  = prefix.getPrefix() + key;
-            return  jedis.decr(realKey);
+            String result1 = jedis.get(realKey);
+            Long result =  jedis.decr(realKey);
+            return result;
         }finally {
             returnToPool(jedis);
         }

@@ -50,6 +50,12 @@ public class MiaoshaController {
     @Autowired
     RabbitMqService mqService;
 
+    @RequestMapping(value = "miaosharesult")
+    public ResultGeekQ<Integer> miaosha1(MiaoShaUser user, @PathVariable("path") String path,
+                                        @RequestParam("goodsId") long goodsId) {
+        return ResultGeekQ.build();
+    };
+
     /**
      * QPS:1306
      * 5000 * 10

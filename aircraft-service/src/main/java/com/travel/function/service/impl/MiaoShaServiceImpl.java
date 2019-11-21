@@ -37,7 +37,7 @@ public class MiaoShaServiceImpl implements MiaoshaService {
     @Autowired
     RedisClient redisClient;
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public OrderInfo miaosha(MiaoShaUser user, GoodsVo goods) {
         //减库存 下订单 写入秒杀订单
