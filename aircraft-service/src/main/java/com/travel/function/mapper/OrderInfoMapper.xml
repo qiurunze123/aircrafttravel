@@ -38,7 +38,7 @@
       #{goodsPrice,jdbcType=DECIMAL}, #{orderChannel,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, 
       #{createDate,jdbcType=TIMESTAMP}, #{payDate,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.travel.function.entity.OrderInfo" >
+  <insert id="insertSelective" parameterType="com.travel.function.entity.OrderInfo" useGeneratedKeys="true" >
     insert into order_info
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -161,4 +161,11 @@
       pay_date = #{payDate,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <select id="getOrderById" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from order_info
+    where id = #{orderId,jdbcType=BIGINT}
+  </select>
 </mapper>

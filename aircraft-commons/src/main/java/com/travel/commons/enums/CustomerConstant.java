@@ -6,6 +6,14 @@ package com.travel.commons.enums;
  */
 public class CustomerConstant {
 
+    //正在进行中
+    public static final Integer MS_ING = 0;
+    //
+    public static final Integer MS_S = 1;
+    //秒杀失败
+    public static final Integer MS_F = -1;
+
+
     /**
      * user status
      */

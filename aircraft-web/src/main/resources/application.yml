@@ -1,8 +1,8 @@
 spring:
   datasource:
-    username: root
-    password: xxxxxx
-    url: jdbc:mysql://112.126.97.242:3306/miaosha?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
+    username: xxx
+    password: xxxx
+    url: jdbc:mysql://xxxxxx:3306/miaosha?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.jdbc.Driver
   thymeleaf:
@@ -17,19 +17,22 @@ spring:
   resources:
       static-locations: classpath:/static/, classpath:/templates/
   redis:
-      host: 112.126.97.242
-      port: 6379
-      password: xxxxxx
-      jedis:
-        pool:
-          max-idle: 50
-          min-idle: 10
-          max-wait: -1
-      timeout: 0
+    database: 0
+    timeout: 3000
+    password: qiurunze
+    cluster:
+      nodes: xxxx,xxxx,xxx
+    lettuce:
+      pool:
+        max-active: 100
+        max-idle: 50
+        max-wait: 1000
+        min-idle: 10
+
   rabbitmq:
     host: 112.126.97.242
-    password: xxxxxx
-    username: xxxxxx
+    password: xxx
+    username: xxx
     port: 5672
     template:
       retry:
@@ -60,7 +63,6 @@ server:
   servlet:
     context-path: /
 
-
 mybatis:
   mapper-locations: com/travel/function/mapper/*.xml
   type-aliases-package: com.travel.function.entity
@@ -69,3 +71,6 @@ mybatis:
 
 pageCache:
   enable: true
+logging:
+  level:
+    com.cet.diagsyscloud.system.dao: DEBUG

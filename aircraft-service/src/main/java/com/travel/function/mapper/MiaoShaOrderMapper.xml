@@ -20,7 +20,7 @@
     delete from miaosha_order
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insertSelective" parameterType="com.travel.function.entity.MiaoShaOrder" >
+  <insert id="insertSelective" parameterType="com.travel.function.entity.MiaoShaOrder" useGeneratedKeys="true">
     insert into miaosha_order
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -67,9 +67,15 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
 
-  <select id="getMiaoshaOrderByUserIdGoodsId" resultType="com.travel.function.entity.MiaoShaOrder">
+  <select id="getMiaoshaOrderByUserIdGoodsId" resultMap="BaseResultMap">
     select <include refid="Base_Column_List"/>
     from miaosha_order where user_id=#{userId}
      and goods_id=#{goodsId}
   </select>
+
+  <select id="listByGoodsId" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/>
+    from miaosha_order where goods_id=#{goodsId}
+  </select>
+
 </mapper>

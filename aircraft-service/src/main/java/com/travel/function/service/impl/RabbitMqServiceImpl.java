@@ -55,6 +55,7 @@ public class RabbitMqServiceImpl implements RabbitMqService {
         if(order != null) {
             return;
         }
+        //todo 修改扣减方式 提醒错误
         //减库存 下订单 写入秒杀订单
         miaoshaService.miaosha(user, goods);
     }

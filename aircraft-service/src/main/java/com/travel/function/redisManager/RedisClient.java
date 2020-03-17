@@ -3,9 +3,10 @@ package com.travel.function.redisManager;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @auther 邱润泽 bullock
@@ -16,17 +17,10 @@ import redis.clients.jedis.JedisPool;
 public class RedisClient<T> {
 
     @Autowired
-    private JedisPool jedisPool;
+    private StringRedisTemplate redisTemplate;
 
-    public void set(String key, String value) throws Exception {
-        Jedis jedis = null;
-        try {
-            jedis = jedisPool.getResource();
-            jedis.set(key, value);
-        } finally {
-            //返还到连接池
-            jedis.close();
-        }
+    public void set(String key, String value) {
+        redisTemplate.opsForValue().set(key,value);
     }
 
 
@@ -34,9 +28,7 @@ public class RedisClient<T> {
      * 设置对象
      * */
     public <T> boolean set(RedisKeyPrefix prefix, String key, T value) {
-        Jedis jedis = null;
         try {
-            jedis =  jedisPool.getResource();
             String str = beanToString(value);
             if(str == null || str.length() <= 0) {
                 return false;
@@ -45,13 +37,13 @@ public class RedisClient<T> {
             String realKey  = prefix.getPrefix() + key;
             int seconds =  prefix.expireSeconds();
             if(seconds <= 0) {
-                jedis.set(realKey, str);
+                redisTemplate.opsForValue().set(realKey, str);
             }else {
-                jedis.setex(realKey, seconds, str);
+                redisTemplate.opsForValue().set(realKey, str,seconds,TimeUnit.SECONDS);
             }
             return true;
         }finally {
-            returnToPool(jedis);
+            log.info("***设置对象完成***");
         }
     }
 
@@ -59,16 +51,14 @@ public class RedisClient<T> {
      * 减少值
      * */
     public <T> Long decr(RedisKeyPrefix prefix, String key) {
-        Jedis jedis = null;
         try {
-            jedis =  jedisPool.getResource();
             //生成真正的key
             String realKey  = prefix.getPrefix() + key;
-            String result1 = jedis.get(realKey);
-            Long result =  jedis.decr(realKey);
+            redisTemplate.opsForValue().get(realKey);
+            Long result = redisTemplate.opsForValue().increment(realKey,-1);
             return result;
         }finally {
-            returnToPool(jedis);
+            log.info("***减少对象完成***");
         }
     }
 
@@ -76,16 +66,14 @@ public class RedisClient<T> {
      * 获取当个对象
      * */
     public <T> T get(RedisKeyPrefix prefix, String key,  Class<T> clazz) {
-        Jedis jedis = null;
         try {
-            jedis =  jedisPool.getResource();
             //生成真正的key
             String realKey  = prefix.getPrefix() + key;
-            String  str = jedis.get(realKey);
-            T t =  stringToBean(str, clazz);
+            String  str =redisTemplate.opsForValue().get(realKey);
+            T t = stringToBean(str, clazz);
             return t;
         }finally {
-            returnToPool(jedis);
+            log.info("***获取对象完成***");
         }
     }
 
@@ -98,47 +86,28 @@ public class RedisClient<T> {
      * @return 加值后的结果
      */
     public Long incr(String key) {
-        Jedis jedis = null;
         Long res = null;
         try {
-            jedis = jedisPool.getResource();
-            res = jedis.incr(key);
+            res = redisTemplate.opsForValue().increment(key,1);
         } catch (Exception e) {
             log.error(e.getMessage());
         } finally {
-            returnToPool(jedis);
+            log.info("***增加对象完成***");
         }
         return res;
     }
 
-    /**
-     * 增加值
-     * */
-    public <T> Long incr(RedisKeyPrefix prefix, String key) {
-        Jedis jedis = null;
-        try {
-            jedis =  jedisPool.getResource();
-            //生成真正的key
-            String realKey  = prefix.getPrefix() + key;
-            return  jedis.incr(realKey);
-        }finally {
-            returnToPool(jedis);
-        }
-    }
 
     /**
      * 删除
      * */
     public boolean delete(RedisKeyPrefix prefix, String key) {
-        Jedis jedis = null;
         try {
-            jedis =  jedisPool.getResource();
             //生成真正的key
             String realKey  = prefix.getPrefix() + key;
-            long ret =  jedis.del(realKey);
-            return ret > 0;
+            return redisTemplate.delete(realKey);
         }finally {
-            returnToPool(jedis);
+            log.info("***减少对象完成***");
         }
     }
 
@@ -174,9 +143,4 @@ public class RedisClient<T> {
     }
 
 
-    private void returnToPool(Jedis jedis) {
-        if(jedis != null) {
-            jedis.close();
-        }
-    }
 }

@@ -8,6 +8,7 @@ import com.travel.function.service.MiaoShaUserService;
 import com.travel.function.vo.LoginVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -26,11 +27,16 @@ public class LoginController {
 
     @Autowired
     private MiaoShaUserService miaoShaUserService;
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     @RequestMapping("/to_login")
     public String tologin() {
         return "login";
     }
+
+
+
     @RequestMapping("/do_login")
     @ResponseBody
     public ResultGeekQ<String> tologin(@Valid LoginVo loginVo, HttpServletResponse response) {

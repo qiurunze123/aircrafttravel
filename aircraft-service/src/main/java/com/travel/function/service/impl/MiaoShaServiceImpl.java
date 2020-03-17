@@ -1,5 +1,6 @@
 package com.travel.function.service.impl;
 
+import com.travel.commons.enums.CustomerConstant;
 import com.travel.commons.utils.MD5Util;
 import com.travel.commons.utils.UUIDUtil;
 import com.travel.function.dao.MiaoShaOrderDao;
@@ -16,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * @author 邱润泽 bullock
@@ -75,5 +78,45 @@ public class MiaoShaServiceImpl implements MiaoshaService {
         String pathOld = (String) redisClient.get(MiaoshaKey.getMiaoshaPath,
                 "" + user.getNickname() + "_" + goodsId, String.class);
         return path.equals(pathOld);
+    }
+
+    @Override
+    public long getMiaoshaResult(Long userId, long goodsId) {
+        MiaoShaOrder order = orderService.getMiaoshaOrderByUserIdGoodsId(userId, goodsId);
+        if (order != null) {//秒杀成功
+            return order.getId();
+        } else {
+            //此商品的秒杀已经结束，但是可能订单还在生成中
+            //获取所有的秒杀订单, 判断订单数量和参与秒杀的商品数量
+            List<MiaoShaOrder> orders = this.getAllMiaoshaOrdersByGoodsId(goodsId);
+            if (orders == null) {
+                return CustomerConstant.MS_ING;//订单还在生成中
+            } else {//判断是否有此用户的订单
+                MiaoShaOrder orderIsGet = get(orders, userId);
+                if (orderIsGet != null) {//如果有，则说明秒杀成功
+                    return orderIsGet.getOrderId();
+                } else {//秒杀失败
+                    return CustomerConstant.MS_F;
+                }
+            }
+        }
+    }
+
+    @Override
+    public List<MiaoShaOrder> getAllMiaoshaOrdersByGoodsId(long goodsId) {
+        return miaoShaOrderDao.listByGoodsId(goodsId);
+    }
+
+
+    private MiaoShaOrder get(List<MiaoShaOrder> orders, Long userId) {
+        if (orders == null || orders.size() <= 0) {
+            return null;
+        }
+        for (MiaoShaOrder order : orders) {
+            if (order.getUserId().equals(userId)) {
+                return order;
+            }
+        }
+        return null;
     }
 }

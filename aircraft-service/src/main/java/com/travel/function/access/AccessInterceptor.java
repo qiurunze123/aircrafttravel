@@ -65,11 +65,12 @@ public class AccessInterceptor  extends HandlerInterceptorAdapter {
 			}else {
 			}
 			AccessKey ak = AccessKey.withExpire(seconds);
-			Integer count = (Integer) redisService.get(ak, key, Integer.class);
-	    	if(count  == null) {
-	    		 redisService.set(ak, key, 1);
+//			Integer count = (Integer) redisService.get(ak, key, Integer.class);
+			Integer count =0;
+			if(count  == null) {
+//	    		 redisService.set(ak, key, 1);
 	    	}else if(count < maxCount) {
-	    		 redisService.incr(ak, key);
+//	    		 redisService.incr(ak, key);
 	    	}else {
 	    		render(response, ACCESS_LIMIT_REACHED);
 	    		return false;

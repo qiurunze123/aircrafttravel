@@ -1,6 +1,7 @@
 package com.travel.function.dao;
 
 import com.travel.function.entity.OrderInfo;
+import org.apache.ibatis.annotations.Param;
 
 public interface OrderInfoDao {
     int deleteByPrimaryKey(Long id);
@@ -14,4 +15,6 @@ public interface OrderInfoDao {
     int updateByPrimaryKeySelective(OrderInfo record);
 
     int updateByPrimaryKey(OrderInfo record);
+
+    public OrderInfo getOrderById(@Param("orderId")long orderId);
 }

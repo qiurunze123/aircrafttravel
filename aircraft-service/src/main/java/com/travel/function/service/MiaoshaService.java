@@ -5,6 +5,8 @@ import com.travel.function.entity.MiaoShaUser;
 import com.travel.function.entity.OrderInfo;
 import com.travel.function.vo.GoodsVo;
 
+import java.util.List;
+
 /**
  * @author 邱润泽 bullock
  */
@@ -19,4 +21,8 @@ public interface MiaoshaService {
     String createMiaoshaPath(MiaoShaUser user, long goodsId);
 
     boolean checkPath(MiaoShaUser user, long goodsId, String path);
+
+    public long getMiaoshaResult(Long userId, long goodsId);
+
+    public List<MiaoShaOrder> getAllMiaoshaOrdersByGoodsId(long goodsId);
 }

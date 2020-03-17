@@ -1,6 +1,7 @@
 package com.travel.function.service.impl;
 
 import com.travel.commons.enums.ResultStatus;
+import com.travel.function.entity.MiaoShaOrder;
 import com.travel.function.redisManager.RedisClient;
 import com.travel.function.redisManager.keysbean.MiaoShaUserKey;
 import com.travel.commons.resultbean.ResultGeekQ;
@@ -19,6 +20,8 @@ import org.springframework.util.StringUtils;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.List;
+
 import static com.travel.commons.enums.CustomerConstant.COOKIE_NAME_TOKEN;
 import static com.travel.commons.enums.ResultStatus.MOBILE_NOT_EXIST;
 
@@ -35,6 +38,8 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
     private MiaoShaUserDao miaoShaUserDao;
     @Autowired
     private RedisClient redisClient;
+//    @Autowired
+//    private StringRedisTemplate stringRedisTemplate;
 
     @Override
     public MiaoShaUser getById(long id) {
@@ -80,7 +85,8 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
     }
 
     public void addCookie(HttpServletResponse response, String token, MiaoShaUser user) {
-        redisClient.set(MiaoShaUserKey.token, token, user);
+        redisClient.
+                set(MiaoShaUserKey.token, token, user);
         Cookie cookie = new Cookie(COOKIE_NAME_TOKEN, token);
         //设置有效期
         cookie.setMaxAge(MiaoShaUserKey.token.expireSeconds());
@@ -104,6 +110,7 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
         }
         return user;
     }
+
 
 
     // http://blog.csdn.net/tTU1EvLDeLFq5btqiK/article/details/78693323

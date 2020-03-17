@@ -1,5 +1,6 @@
 package com.travel.web.controller;
 
+import com.travel.commons.enums.ResultStatus;
 import com.travel.function.rabbitmq.MiaoShaMessage;
 import com.travel.function.redisManager.RedisClient;
 import com.travel.function.redisManager.RedisService;
@@ -13,6 +14,7 @@ import com.travel.function.service.*;
 import com.travel.function.vo.GoodsVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -49,12 +51,28 @@ public class MiaoshaController {
     RandomValidateCodeService codeService;
     @Autowired
     RabbitMqService mqService;
+    @Autowired
+    StringRedisTemplate redisTemplate;
 
-    @RequestMapping(value = "miaosharesult")
-    public ResultGeekQ<Integer> miaosha1(MiaoShaUser user, @PathVariable("path") String path,
-                                        @RequestParam("goodsId") long goodsId) {
-        return ResultGeekQ.build();
-    };
+    @RequestMapping(value="/result", method=RequestMethod.GET)
+    @ResponseBody
+    public ResultGeekQ<Long> miaoshaResult(Model model,MiaoShaUser user,
+                                      @RequestParam("goodsId")long goodsId) {
+        ResultGeekQ result =  ResultGeekQ.build();
+        model.addAttribute("user", user);
+        try {
+            if(user == null) {
+                result.withError(SESSION_ERROR.getCode(), SESSION_ERROR.getMessage());
+                return result;
+            }
+            long response = miaoshaService.getMiaoshaResult(user.getId(), goodsId);
+            result.setData(response);
+        }catch (Exception e){
+            result.withError(SYSTEM_ERROR);
+            return result;
+        }
+        return result;
+    }
 
     /**
      * QPS:1306

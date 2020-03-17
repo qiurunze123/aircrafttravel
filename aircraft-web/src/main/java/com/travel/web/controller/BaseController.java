@@ -6,6 +6,7 @@ import com.travel.function.redisManager.RedisService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.thymeleaf.context.WebContext;
@@ -29,13 +30,13 @@ public class BaseController {
     @Autowired
     RedisClient redisService;
 
-
     public String render(HttpServletRequest request, HttpServletResponse response, Model model, String tplName, RedisKeyPrefix prefix, String key) {
         if(!pageCacheEnable) {
             return tplName;
         }
         //取缓存
-        String html = (String) redisService.get(prefix, key, String.class);
+//        String html = (String) redisService.get(prefix, key, String.class);
+        String html = "";
         if(!StringUtils.isEmpty(html)) {
             out(response, html);
             return null;
@@ -45,7 +46,7 @@ public class BaseController {
                 request.getServletContext(),request.getLocale(), model.asMap());
         html = thymeleafViewResolver.getTemplateEngine().process(tplName, ctx);
         if(!StringUtils.isEmpty(html)) {
-            redisService.set(prefix, key, html);
+//            redisService.set(prefix, key, html);
         }
         out(response, html);
         return null;

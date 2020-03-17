@@ -1,6 +1,7 @@
 package com.travel.function.service.impl;
 
 import com.travel.function.dao.MiaoShaOrderDao;
+import com.travel.function.dao.OrderInfoDao;
 import com.travel.function.entity.MiaoShaOrder;
 import com.travel.function.entity.MiaoShaUser;
 import com.travel.function.entity.OrderInfo;
@@ -23,13 +24,15 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     OrderInfoService orderInfoService;
-
     @Autowired
     MiaoshaService miaoshaService;
-
+    @Autowired
+    MiaoShaOrderDao miaoShaOrderDao;
+    @Autowired
+    OrderInfoDao orderInfoDao;
     @Override
     public MiaoShaOrder getMiaoshaOrderByUserIdGoodsId(long userId, long goodsId) {
-        return miaoshaService.getMiaoshaOrderByUserIdGoodsId(userId, goodsId);
+        return miaoShaOrderDao.getMiaoshaOrderByUserIdGoodsId(userId, goodsId);
     }
 
 
@@ -52,6 +55,11 @@ public class OrderServiceImpl implements OrderService {
         miaoshaOrder.setUserId(user.getId());
         miaoshaService.insertMiaoshaOrder(miaoshaOrder);
         return orderInfo;
+    }
+
+    @Override
+    public OrderInfo getOrderById(long orderId) {
+        return orderInfoDao.getOrderById(orderId);
     }
 
 

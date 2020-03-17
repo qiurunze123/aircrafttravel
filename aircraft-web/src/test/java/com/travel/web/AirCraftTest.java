@@ -48,6 +48,7 @@ public class AirCraftTest {
     @Autowired
     private RedisClient redisClient;
 
+
     @Test
     public void userTest(){
         System.out.println("获取user ====== "+JSON.toJSONString(userService.getUser(1)));
@@ -89,7 +90,7 @@ public class AirCraftTest {
 
     @Test
     public void redisTest() throws Exception {
-        redisClient.set("qiurunze","帅气");
+//        redisClient.set("qiurunze","帅气");
         System.out.println("======执行完毕 =====");
     }
 
@@ -122,4 +123,7 @@ public class AirCraftTest {
         System.out.println(System.currentTimeMillis()+"==================");
 
     }
+
+
+
 }
