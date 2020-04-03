@@ -1,7 +1,8 @@
 package com.travel.function.config;
 
 import com.travel.function.entity.MiaoShaUser;
-import com.travel.function.service.MiaoShaUserService;
+import com.travel.function.logic.MiaoShaLogic;
+import com.travel.service.MiaoShaUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,9 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Autowired
     private MiaoShaUserService miaoShaUserService;
+
+    @Autowired
+    private MiaoShaLogic mSLogic ;
     @Override
     public boolean supportsParameter(MethodParameter methodParameter) {
         //获取参数类型
@@ -46,7 +50,7 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
             return "login";
         }
         String token = StringUtils.isEmpty(paramToken)?cookieToken:paramToken;
-        MiaoShaUser user = miaoShaUserService.getByToken(response,token);
+        MiaoShaUser user = mSLogic.getByToken(response,token);
 
         return user;
 

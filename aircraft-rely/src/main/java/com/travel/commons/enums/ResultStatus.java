@@ -23,6 +23,7 @@ public enum ResultStatus {
     SYSTEM_DB_ERROR(10006, "数据库系统错误"),
     FILE_ALREADY_DOWNLOAD(10007, "文件已经下载"),
     DATA_ALREADY_PEXISTS(10008, "数据已经存在"),
+    DATA_NOT_EXISTS(10009, "数据不存在"),
 
 
     /**
@@ -61,7 +62,9 @@ public enum ResultStatus {
      */
     MIAO_SHA_OVER(40001,"商品已经秒杀完毕"),
     REPEATE_MIAOSHA(40002,"不能重复秒杀"),
-    MIAOSHA_FAIL(40003,"秒杀失败");
+    MIAOSHA_REDUCE_FAIL(40004,"减库存失败"),
+    MIAOSHA_FAIL(40003,"秒杀失败"),
+    MIAOSHA_RESULT_FAIL(40005,"获取秒杀结果失败");
 
     /**
      * 商品模块

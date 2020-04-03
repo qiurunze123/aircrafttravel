@@ -2,11 +2,11 @@ package com.travel.function.access;
 
 import com.alibaba.fastjson.JSON;
 import com.travel.commons.enums.ResultStatus;
+import com.travel.function.logic.MiaoShaLogic;
 import com.travel.function.redisManager.RedisClient;
-import com.travel.function.redisManager.RedisService;
 import com.travel.commons.resultbean.ResultGeekQ;
 import com.travel.function.entity.MiaoShaUser;
-import com.travel.function.service.MiaoShaUserService;
+import com.travel.service.MiaoShaUserService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +33,9 @@ public class AccessInterceptor  extends HandlerInterceptorAdapter {
 
 	@Autowired
 	MiaoShaUserService userService;
+
+	@Autowired
+	private MiaoShaLogic mSLogic;
 
 	@Autowired
 	RedisClient redisService;
@@ -101,7 +104,7 @@ public class AccessInterceptor  extends HandlerInterceptorAdapter {
 			return null;
 		}
 		String token = StringUtils.isEmpty(paramToken)?cookieToken:paramToken;
-		return userService.getByToken(response, token);
+		return mSLogic.getByToken(response, token);
 	}
 
 	private String getCookieValue(HttpServletRequest request, String cookieNameToken) {

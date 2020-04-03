@@ -1,4 +1,4 @@
-package com.travel.function.entity;
+package com.travel.vo;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +9,7 @@ import lombok.Setter;
  */
 @Setter
 @Getter
-public class User {
+public class UserVo {
 
     //实体类的属性和表的字段名称一一对应
     private int id;

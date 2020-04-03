@@ -12,6 +12,7 @@ import com.travel.function.entity.OrderInfo;
 import com.travel.function.redisManager.keysbean.GoodsKey;
 import com.travel.function.service.*;
 import com.travel.function.vo.GoodsVo;
+import com.travel.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -65,7 +66,11 @@ public class MiaoshaController {
                 result.withError(SESSION_ERROR.getCode(), SESSION_ERROR.getMessage());
                 return result;
             }
-            long response = miaoshaService.getMiaoshaResult(user.getId(), goodsId);
+            ResultGeekQ<Long> response = miaoshaService.getMiaoshaResult(user.getId(), goodsId);
+            if()
+
+
+
             result.setData(response);
         }catch (Exception e){
             result.withError(SYSTEM_ERROR);

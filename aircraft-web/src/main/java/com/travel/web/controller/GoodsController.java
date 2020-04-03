@@ -1,15 +1,17 @@
 package com.travel.web.controller;
 
 import com.travel.commons.enums.ResultStatus;
-import com.travel.function.redisManager.RedisClient;
-import com.travel.function.redisManager.keysbean.GoodsKey;
 import com.travel.commons.resultbean.ResultGeekQ;
 import com.travel.function.entity.MiaoShaUser;
-import com.travel.function.service.GoodsService;
-import com.travel.function.service.MiaoShaUserService;
-import com.travel.function.vo.GoodsDetailVo;
-import com.travel.function.vo.GoodsVo;
+import com.travel.function.redisManager.RedisClient;
+import com.travel.function.redisManager.keysbean.GoodsKey;
+import com.travel.service.GoodsService;
+import com.travel.service.MiaoShaUserService;
+import com.travel.vo.GoodsDetailVo;
+import com.travel.vo.GoodsVo;
+import com.travel.vo.MiaoShaUserVo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,7 +47,12 @@ public class GoodsController extends BaseController {
     public ResultGeekQ<GoodsDetailVo> goodsDetail(MiaoShaUser user, String goodsId) {
         ResultGeekQ resultGeekQ = ResultGeekQ.build();
         try {
-            GoodsVo goods = goodsService.goodsVoByGoodId(Long.valueOf(goodsId));
+            ResultGeekQ<GoodsVo> goodR = goodsService.goodsVoByGoodId(Long.valueOf(goodsId));
+            if(!ResultGeekQ.isSuccess(goodR)){
+                resultGeekQ.withError(goodR.getCode(),goodR.getMessage());
+                return resultGeekQ;
+            }
+            GoodsVo goods = goodR.getData();
             long startAt = goods.getStartDate().getTime();
             long endAt = goods.getEndDate().getTime();
             long now = System.currentTimeMillis();
@@ -66,7 +73,9 @@ public class GoodsController extends BaseController {
             }
             GoodsDetailVo vo = new GoodsDetailVo();
             vo.setGoods(goods);
-            vo.setUser(user);
+            MiaoShaUserVo userVo = new MiaoShaUserVo();
+            BeanUtils.copyProperties(user,userVo);
+            vo.setUser(userVo);
             vo.setRemainSeconds(remainSeconds);
             vo.setMiaoshaStatus(miaoshaStatus);
             resultGeekQ.setData(vo);
@@ -83,8 +92,14 @@ public class GoodsController extends BaseController {
     public String goodsList(HttpServletRequest request, HttpServletResponse response,
                             MiaoShaUser user, Model model) {
         model.addAttribute("user", user);
-        List<GoodsVo> goods = goodsService.goodsVoList();
-        model.addAttribute("goodsList", goods);
+        ResultGeekQ<List<GoodsVo>> goodsR = goodsService.goodsVoList();
+        if(!ResultGeekQ.isSuccess(goodsR)){
+            //todo 如何处理
+            return null;
+        }
+
+
+        model.addAttribute("goodsList", goodsR.getData());
         return render(request, response, model, "goods_list", GoodsKey.getGoodsList, "");
     }
 }

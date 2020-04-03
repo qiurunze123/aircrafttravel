@@ -7,8 +7,6 @@ import com.travel.commons.utils.MD5Util;
 import com.travel.commons.utils.UUIDUtil;
 import com.travel.function.entity.CustomerLogin;
 import com.travel.function.entity.MiaoShaUser;
-import com.travel.function.service.CustomerService;
-import com.travel.function.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -2,7 +2,7 @@ package com.travel.function.dao;
 
 import com.travel.function.entity.Goods;
 import com.travel.function.entity.MiaoShaGoods;
-import com.travel.function.vo.GoodsVo;
+import com.travel.vo.GoodsVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

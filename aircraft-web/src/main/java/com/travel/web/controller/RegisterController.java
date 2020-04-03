@@ -4,7 +4,6 @@ import com.travel.commons.enums.CustomerConstant;
 import com.travel.commons.enums.ResultStatus;
 import com.travel.commons.resultbean.ResultGeekQ;
 import com.travel.function.entity.CustomerLogin;
-import com.travel.function.service.CustomerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

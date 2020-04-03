@@ -1,4 +1,4 @@
-package com.travel.function.vo;
+package com.travel.vo;
 
 import com.travel.commons.valiadator.CheckMobile;
 import lombok.AllArgsConstructor;

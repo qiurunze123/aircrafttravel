@@ -10,7 +10,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>aircraft-commons</module>
+        <module>aircraft-rely</module>
         <module>aircraft-service</module>
         <module>aircraft-web</module>
     </modules>
