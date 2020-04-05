@@ -1,0 +1,76 @@
+spring:
+  datasource:
+    username: xxx
+    password: xxxx
+    url: jdbc:mysql://xxxxxx:3306/miaosha?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+  thymeleaf:
+    cache: false # 开发时关闭缓存,不然没法看到实时页面
+    mode: HTML5 # 用非严格的 HTML
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+    prefix: classpath:/templates/
+    check-template-location : true
+    suffix: .html
+  resources:
+      static-locations: classpath:/static/, classpath:/templates/
+  redis:
+    database: 0
+    timeout: 3000
+    password: qiurunze
+    cluster:
+      nodes: xxxx,xxxx,xxx
+    lettuce:
+      pool:
+        max-active: 100
+        max-idle: 50
+        max-wait: 1000
+        min-idle: 10
+
+  rabbitmq:
+    host: 112.126.97.242
+    password: xxx
+    username: xxx
+    port: 5672
+    template:
+      retry:
+        enabled: true
+        initial-interval: 1000
+        max-attempts: 3
+        max-interval: 100000
+        multiplier: 1
+    listener:
+      simple:
+        default-requeue-rejected: true
+        auto-startup: true
+        prefetch: 1
+        max-concurrency: 10
+        concurrency: 10
+#    lettuce:
+#      pool:登陆发生错误
+#        max-active: 8
+#        max-idle: 8
+#        max-wait: -1ms
+#        min-idle: 0
+#    cluster:
+#      nodes: 112.126.97.242:7001,112.126.97.242:7002
+#    password: passwd123
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+mybatis:
+  mapper-locations: com/travel/function/mapper/*.xml
+  type-aliases-package: com.travel.function.entity
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+pageCache:
+  enable: true
+logging:
+  level:
+    com.cet.diagsyscloud.system.dao: DEBUG
