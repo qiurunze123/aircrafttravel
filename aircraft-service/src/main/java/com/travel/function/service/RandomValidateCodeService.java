@@ -3,6 +3,7 @@ package com.travel.function.service;
 import com.travel.function.redisManager.RedisClient;
 import com.travel.function.redisManager.keysbean.MiaoshaKey;
 import com.travel.function.entity.MiaoShaUser;
+import com.travel.vo.MiaoShaUserVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,7 +124,7 @@ public class RandomValidateCodeService {
         return String.valueOf(randString.charAt(num));
     }
 
-    public boolean checkVerifyCode(MiaoShaUser user, long goodsId, String verifyCode) {
+    public boolean checkVerifyCode(MiaoShaUserVo user, long goodsId, String verifyCode) {
         if (user == null || goodsId <= 0) {
             return false;
         }

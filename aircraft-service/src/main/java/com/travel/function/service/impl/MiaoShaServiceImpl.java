@@ -23,6 +23,7 @@ import com.travel.vo.OrderInfoVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -170,6 +171,22 @@ public class MiaoShaServiceImpl implements MiaoshaService {
         }catch(Exception e){
             log.error("***getMiaoshaResult *** error:{}",e);
             resultGeekQ.withErrorCodeAndMessage(ResultStatus.MIAOSHA_RESULT_FAIL);
+            return resultGeekQ;
+        }
+    }
+
+    @Override
+    public ResultGeekQ<Boolean> checkPath(MiaoShaUserVo user, long goodsId, String path) {
+        ResultGeekQ<Boolean> resultGeekQ = ResultGeekQ.build();
+        try{
+            MiaoShaUser mSuser = new MiaoShaUser();
+            BeanUtils.copyProperties(user,mSuser);
+            Boolean  checkPathR= mSLogic.checkPath(mSuser, goodsId, path);
+            resultGeekQ.setData(checkPathR);
+            return resultGeekQ;
+        }catch(Exception e){
+            log.error("***查询失败 checkPath *** error:{}",e);
+            resultGeekQ.withErrorCodeAndMessage(ResultStatus.MIAOSHA_FAIL);
             return resultGeekQ;
         }
     }

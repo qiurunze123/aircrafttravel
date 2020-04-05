@@ -1,12 +1,10 @@
 package com.travel.web;
 
-import com.alibaba.fastjson.JSON;
-import com.travel.function.redisManager.RedisClient;
-import com.travel.function.redisManager.RedisService;
 import com.travel.commons.utils.MD5Util;
 import com.travel.commons.utils.UUIDUtil;
-import com.travel.function.entity.CustomerLogin;
 import com.travel.function.entity.MiaoShaUser;
+import com.travel.function.redisManager.RedisClient;
+import com.travel.function.redisManager.RedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +17,6 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.function.Predicate;
 
 /**
@@ -33,24 +30,15 @@ import java.util.function.Predicate;
 public class AirCraftTest {
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private RedisService rrdisLock;
 //
 //    @Autowired
 //    private RedissonClient redissonClient;
 
     @Autowired
-    private CustomerService customerService;
-    @Autowired
     private RedisClient redisClient;
 
 
-    @Test
-    public void userTest(){
-        System.out.println("获取user ====== "+JSON.toJSONString(userService.getUser(1)));
-    }
 
     @Test
     public void redisLocktest()
@@ -67,13 +55,13 @@ public class AirCraftTest {
 
     @Test
     public void customerTest() throws Exception {
-        CustomerLogin customerLogin = new CustomerLogin();
-        customerLogin.setCustomerId(100);
-        customerLogin.setLoginName("qiurunze");
-        customerLogin.setModifiedTime(new Date());
-        customerLogin.setPassword("123456");
-        customerLogin.setUserStats(0);
-        customerService.insertCustomerLogin(customerLogin);
+//        CustomerLogin customerLogin = new CustomerLogin();
+//        customerLogin.setCustomerId(100);
+//        customerLogin.setLoginName("qiurunze");
+//        customerLogin.setModifiedTime(new Date());
+//        customerLogin.setPassword("123456");
+//        customerLogin.setUserStats(0);
+//        customerService.insertCustomerLogin(customerLogin);
     }
 
     @Test

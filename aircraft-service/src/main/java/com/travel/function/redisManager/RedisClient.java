@@ -25,7 +25,7 @@ public class RedisClient<T> {
 
 
     /**
-     * 设置对象
+     * 设置对象lettuce
      * */
     public <T> boolean set(RedisKeyPrefix prefix, String key, T value) {
         try {

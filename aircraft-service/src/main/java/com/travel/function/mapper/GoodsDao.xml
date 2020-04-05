@@ -11,7 +11,7 @@
     <result column="goods_detail" property="goodsDetail" jdbcType="VARCHAR"/>
   </resultMap>
 
-  <resultMap id="BaseResultMapGoodsVo" type="com.travel.function.vo.GoodsVo" >
+  <resultMap id="BaseResultMapGoodsVo" type="com.travel.vo.GoodsVo" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
     <result column="goods_title" property="goodsTitle" jdbcType="VARCHAR" />

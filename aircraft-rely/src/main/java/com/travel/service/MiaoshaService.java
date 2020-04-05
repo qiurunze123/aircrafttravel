@@ -7,8 +7,6 @@ import com.travel.vo.MiaoShaOrderVo;
 import com.travel.vo.MiaoShaUserVo;
 import com.travel.vo.OrderInfoVo;
 
-import java.util.List;
-
 /**
  * @author 邱润泽 bullock
  */
@@ -23,5 +21,7 @@ public interface MiaoshaService {
     public ResultGeekQ<String> createMiaoshaPath(MiaoShaUserVo user, Long goodsId);
 
     public ResultGeekQ<Long> getMiaoshaResult(Long userId, Long goodsId);
+
+    public ResultGeekQ<Boolean> checkPath(MiaoShaUserVo user, long goodsId, String path);
 
 }

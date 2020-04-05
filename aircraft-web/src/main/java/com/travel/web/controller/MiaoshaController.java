@@ -1,18 +1,14 @@
 package com.travel.web.controller;
 
-import com.travel.commons.enums.ResultStatus;
-import com.travel.function.rabbitmq.MiaoShaMessage;
-import com.travel.function.redisManager.RedisClient;
-import com.travel.function.redisManager.RedisService;
 import com.travel.commons.resultbean.ResultGeekQ;
 import com.travel.function.access.AccessLimit;
-import com.travel.function.entity.MiaoShaOrder;
 import com.travel.function.entity.MiaoShaUser;
-import com.travel.function.entity.OrderInfo;
+import com.travel.function.redisManager.RedisClient;
 import com.travel.function.redisManager.keysbean.GoodsKey;
-import com.travel.function.service.*;
-import com.travel.function.vo.GoodsVo;
+import com.travel.function.service.RandomValidateCodeService;
 import com.travel.service.*;
+import com.travel.vo.MiaoShaOrderVo;
+import com.travel.vo.MiaoShaUserVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -67,11 +63,11 @@ public class MiaoshaController {
                 return result;
             }
             ResultGeekQ<Long> response = miaoshaService.getMiaoshaResult(user.getId(), goodsId);
-            if()
-
-
-
-            result.setData(response);
+            if(!ResultGeekQ.isSuccess(response)){
+                result.withError(response.getCode(), response.getMessage());
+                return result;
+            }
+            result.setData(response.getData());
         }catch (Exception e){
             result.withError(SYSTEM_ERROR);
             return result;
@@ -91,7 +87,7 @@ public class MiaoshaController {
     @AccessLimit(seconds = 5, maxCount = 5, needLogin = true)
     @RequestMapping(value="/{path}/do_miaosha", method= RequestMethod.POST)
     @ResponseBody
-    public ResultGeekQ<Integer> miaosha(MiaoShaUser user, @PathVariable("path") String path,
+    public ResultGeekQ<Integer> miaosha(MiaoShaUserVo user, @PathVariable("path") String path,
                                         @RequestParam("goodsId") long goodsId) {
         ResultGeekQ<Integer> result = ResultGeekQ.build();
         try {
@@ -100,14 +96,14 @@ public class MiaoshaController {
                 return result;
             }
             //验证path
-            boolean check = miaoshaService.checkPath(user, goodsId, path);
-            if (!check) {
+            ResultGeekQ<Boolean> check = miaoshaService.checkPath(user, goodsId, path);
+            if (!ResultGeekQ.isSuccess(check)) {
                 result.withError(REQUEST_ILLEGAL.getCode(), REQUEST_ILLEGAL.getMessage());
                 return result;
             }
             //是否已经秒杀到
-            MiaoShaOrder order = orderService.getMiaoshaOrderByUserIdGoodsId(Long.valueOf(user.getNickname()), goodsId);
-            if (order != null) {
+            ResultGeekQ<MiaoShaOrderVo> order = orderService.getMiaoshaOrderByUserIdGoodsId(Long.valueOf(user.getNickname()), goodsId);
+            if (!ResultGeekQ.isSuccess(order)) {
                 result.withError(REPEATE_MIAOSHA.getCode(), REPEATE_MIAOSHA.getMessage());
                 return result;
             }
@@ -117,11 +113,6 @@ public class MiaoshaController {
                 result.withError(MIAO_SHA_OVER.getCode(), MIAO_SHA_OVER.getMessage());
                 return result;
             }
-            //排队
-            MiaoShaMessage mm = new MiaoShaMessage();
-            mm.setGoodsId(goodsId);
-            mm.setUser(user);
-            mqService.sendMiaoshaMessage(mm);
         } catch (Exception e) {
             result.withErrorCodeAndMessage(MIAOSHA_FAIL);
             return result;
@@ -156,7 +147,7 @@ public class MiaoshaController {
     @AccessLimit(seconds = 5, maxCount = 5, needLogin = true)
     @RequestMapping(value = "/path", method = RequestMethod.GET)
     @ResponseBody
-    public ResultGeekQ<String> getMiaoshaPath(HttpServletRequest request, MiaoShaUser user,
+    public ResultGeekQ<String> getMiaoshaPath(HttpServletRequest request, MiaoShaUserVo user,
                                               @RequestParam("goodsId") long goodsId,
                                               @RequestParam(value = "verifyCode", defaultValue = "0") String verifyCode
     ) {
@@ -170,8 +161,12 @@ public class MiaoshaController {
             result.withError(REQUEST_ILLEGAL.getCode(), REQUEST_ILLEGAL.getMessage());
             return result;
         }
-        String path = miaoshaService.createMiaoshaPath(user, goodsId);
-        result.setData(path);
+        ResultGeekQ<String> pathR = miaoshaService.createMiaoshaPath(user, goodsId);
+        if(!ResultGeekQ.isSuccess(pathR)){
+            result.withError(pathR.getCode(), pathR.getMessage());
+            return result;
+        }
+        result.setData(pathR.getData());
         return result;
     }
 
