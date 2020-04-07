@@ -33,9 +33,11 @@ public class OrderServiceImpl implements OrderService {
         ResultGeekQ resultGeekQ = ResultGeekQ.build();
         try{
             MiaoShaOrder mSorder = mSLogic.getMiaoshaOrderByUserIdGoodsId(userId, goodsId);
-            MiaoShaOrderVo orderVo = new MiaoShaOrderVo();
-            BeanUtils.copyProperties(mSorder,orderVo);
-            resultGeekQ.setData(orderVo);
+            //如果为null 则无订单 返回订单已存在
+            if(mSorder != null){
+                resultGeekQ.withErrorCodeAndMessage(ResultStatus.GOOD_EXIST);
+                return resultGeekQ;
+            }
             return resultGeekQ;
         }catch(Exception e){
             log.error("***getMiaoshaOrderByUserIdGoodsId***fail",e);

@@ -35,7 +35,8 @@
 
 <div class="panel panel-default" style="height:100%;background-color:rgba(222,222,222,0.8)" >
   <div class="panel-heading">秒杀商品详情</div>
-  <div class="panel-body">
+    <button class="btn btn-primary" type="button" id="toLogin"  onclick="toLogin()">去登陆</button>
+    <div class="panel-body">
   	<span id="userTip"> 您还没有登录，请登陆后再操作<br/></span>
   	<span>没有收货地址的提示。。。</span>
   </div>
@@ -88,6 +89,11 @@
 </body>
 <script>
 
+
+    function toLogin(){
+        window.location.href="/login/to_login";
+    }
+
 function getMiaoshaPath(){
 	var goodsId = $("#goodsId").val();
 	g_showLoading();
@@ -103,7 +109,7 @@ function getMiaoshaPath(){
 				var path = data.data;
 				doMiaosha(path);
 			}else{
-				layer.msg(data.msg);
+				layer.msg(data.message);
 			}
 		},
 		error:function(){
@@ -139,7 +145,7 @@ function getMiaoshaResult(goodsId){
 							});
 				}
 			}else{
-				layer.msg(data.msg);
+				layer.msg(data.message);
 			}
 		},
 		error:function(){
@@ -150,7 +156,7 @@ function getMiaoshaResult(goodsId){
 
 function doMiaosha(path){
 	$.ajax({
-		url:"/miaosha/"+path+"/do_miaosha",
+		url:"/miaosha/"+path+"/confirm",
 		type:"POST",
 		data:{
 			goodsId:$("#goodsId").val()
@@ -160,7 +166,7 @@ function doMiaosha(path){
 				//window.location.href="/order_detail.htm?orderId="+data.data.id;
 				getMiaoshaResult($("#goodsId").val());
 			}else{
-				layer.msg(data.msg);
+				layer.msg(data.message);
 			}
 		},
 		error:function(){
@@ -177,6 +183,7 @@ function render(detail){
 	var user = detail.user;
 	if(user){
 		$("#userTip").hide();
+        $("#toLogin").hide();
 	}
 	$("#goodsName").text(goods.goodsName);
 	$("#goodsImg").attr("src", goods.goodsImg);
@@ -206,7 +213,7 @@ function getDetail(){
 			if(data.code == 0){
 				render(data.data);
 			}else{
-				layer.msg(data.msg);
+				layer.msg(data.message);
 			}
 		},
 		error:function(data){

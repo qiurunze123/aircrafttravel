@@ -2,6 +2,7 @@ package com.travel.web.exception;
 
 import com.travel.commons.enums.ResultStatus;
 import com.travel.commons.resultbean.ResultGeekQ;
+import com.travel.function.exception.UserException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
@@ -34,8 +35,9 @@ public class GlobleExceptionHandler {
             String msg = error.getDefaultMessage();
             log.error("======异常信息为==== error:{}",msg);
             resultGeekQ.withErrorArgs(ResultStatus.BIND_ERROR.getCode(), msg, error);
-        }else{
-            resultGeekQ.withErrorCodeAndMessage(ResultStatus.SYSTEM_ERROR);
+        } else if(e instanceof UserException){
+            log.error("***用户不存在请检查!***");
+            resultGeekQ.withErrorArgs(ResultStatus.USER_NOT_EXIST.getCode(),ResultStatus.USER_NOT_EXIST.getMessage());
         }
         return resultGeekQ;
     }

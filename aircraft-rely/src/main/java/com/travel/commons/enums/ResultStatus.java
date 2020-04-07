@@ -57,6 +57,11 @@ public enum ResultStatus {
      */
     GOOD_NOT_EXIST(50001,"订单不存在"),
 
+    PRODUCT_NOT_EXIST(50001,"订单不存在"),
+
+    //订单已经存在
+    GOOD_EXIST(50002,"订单已经存在"),
+
     /**
      * 秒杀模块
      */
@@ -64,7 +69,11 @@ public enum ResultStatus {
     REPEATE_MIAOSHA(40002,"不能重复秒杀"),
     MIAOSHA_REDUCE_FAIL(40004,"减库存失败"),
     MIAOSHA_FAIL(40003,"秒杀失败"),
-    MIAOSHA_RESULT_FAIL(40005,"获取秒杀结果失败");
+    MIAOSHA_RESULT_FAIL(40005,"获取秒杀结果失败"),
+    MIAOSHA_NOT_START(40006,"秒杀还未开始"),
+    MIAOSHA_ING(40007,"秒杀进行中"),
+    MIAOSHA_END(40008,"秒杀已经结束");
+
 
     /**
      * 商品模块

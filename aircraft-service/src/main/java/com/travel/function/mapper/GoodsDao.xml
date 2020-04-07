@@ -133,7 +133,7 @@
   </select>
 
 
-  <select id="getGoodsVoByGoodsId" resultMap="BaseResultMap" >
+  <select id="getGoodsVoByGoodsId" resultMap="BaseResultMapGoodsVo" >
     select <include refid="Base_column_List_GoodVo" />
     from miaosha_goods  left join goods  on miaosha_goods.goods_id = goods.id
     WHERE miaosha_goods.goods_id = #{goodsId,jdbcType=BIGINT}

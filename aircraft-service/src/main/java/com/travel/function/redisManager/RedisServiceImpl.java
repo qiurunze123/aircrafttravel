@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
  * @author 邱润泽 bullock
  */
 @Service
-public class RedisServiceImpl implements RedisService {
+public class RedisServiceImpl {
 //    @Autowired
 //    private RedisTemplate redisTemplate;
 //

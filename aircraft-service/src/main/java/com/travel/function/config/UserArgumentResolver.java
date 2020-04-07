@@ -1,8 +1,13 @@
 package com.travel.function.config;
 
+import com.travel.commons.enums.ResultStatus;
 import com.travel.function.entity.MiaoShaUser;
+import com.travel.function.exception.UserException;
 import com.travel.function.logic.MiaoShaLogic;
 import com.travel.service.MiaoShaUserService;
+import com.travel.vo.MiaoShaUserVo;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Service;
@@ -20,10 +25,8 @@ import java.util.Arrays;
 import static com.travel.commons.enums.CustomerConstant.COOKIE_NAME_TOKEN;
 
 @Service
+@Slf4j
 public class UserArgumentResolver implements HandlerMethodArgumentResolver {
-
-    @Autowired
-    private MiaoShaUserService miaoShaUserService;
 
     @Autowired
     private MiaoShaLogic mSLogic ;
@@ -47,21 +50,20 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
         String paramToken = request.getParameter(COOKIE_NAME_TOKEN);
 
         if(StringUtils.isEmpty(cookieToken)&& StringUtils.isEmpty(paramToken)){
-            return "login";
+            log.info("***resolveArgument token为空请登录!***");
+            throw new UserException(ResultStatus.USER_NOT_EXIST);
         }
         String token = StringUtils.isEmpty(paramToken)?cookieToken:paramToken;
         MiaoShaUser user = mSLogic.getByToken(response,token);
-
         return user;
-
-        /**
-         *  threadlocal 存储线程副本 保证线程不冲突
-         */
-//        return UserContext.getUser();
     }
 
     private String getCookieValue(HttpServletRequest request, String cookieNameToken) {
         Cookie[] cookies = request.getCookies();
+        if(cookies == null){
+            log.error(" ***cookies 为null! 请登录***");
+            return null;
+        }
         Cookie cookieValue =  Arrays.stream(cookies).filter(cookie -> cookie.getName().equals(cookieNameToken)).findFirst().get();
         return cookieValue.getValue();
     };

@@ -11,6 +11,7 @@ import com.travel.vo.GoodsDetailVo;
 import com.travel.vo.GoodsVo;
 import com.travel.vo.MiaoShaUserVo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -47,6 +48,10 @@ public class GoodsController extends BaseController {
     public ResultGeekQ<GoodsDetailVo> goodsDetail(MiaoShaUser user, String goodsId) {
         ResultGeekQ resultGeekQ = ResultGeekQ.build();
         try {
+//            if(StringUtils.isEmpty(user.getNickname())){
+//                resultGeekQ.withError(ResultStatus.USER_NOT_EXIST.getCode(),ResultStatus.USER_NOT_EXIST.getMessage());
+//                return resultGeekQ;
+//            }
             ResultGeekQ<GoodsVo> goodR = goodsService.goodsVoByGoodId(Long.valueOf(goodsId));
             if(!ResultGeekQ.isSuccess(goodR)){
                 resultGeekQ.withError(goodR.getCode(),goodR.getMessage());

@@ -62,6 +62,11 @@ public class GoodsServiceImpl implements GoodsService {
             MiaoShaGoods g = new MiaoShaGoods();
             g.setGoodsId(goods.getId());
             Boolean reduceSorF = goodsLogic.reduceStock(g)>0;
+            if(reduceSorF==false){
+                log.error(" *****reduceSorF扣减库存发生错误*****");
+                resultGeekQ.withErrorCodeAndMessage(ResultStatus.DATA_NOT_EXISTS);
+                return resultGeekQ;
+            }
             resultGeekQ.setData(reduceSorF);
         }catch(Exception e){
             log.error(" *****reduceStock扣减库存发生错误***** error:{}",e);
