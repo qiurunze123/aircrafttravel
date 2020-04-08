@@ -72,7 +72,9 @@ public enum ResultStatus {
     MIAOSHA_RESULT_FAIL(40005,"获取秒杀结果失败"),
     MIAOSHA_NOT_START(40006,"秒杀还未开始"),
     MIAOSHA_ING(40007,"秒杀进行中"),
-    MIAOSHA_END(40008,"秒杀已经结束");
+    MIAOSHA_END(40008,"秒杀已经结束"),
+    MIAOSHA_DEDUCT_FAIL(40009,"扣减库存失败"),
+    MIAOSHA_LOCAL_GOODS_NO (40010,"访问太频繁!");
 
 
     /**

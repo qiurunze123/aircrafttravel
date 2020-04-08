@@ -64,4 +64,21 @@ public class CustomerConstant {
 
 
     public static final String COOKIE_NAME_TOKEN = "token" ;
+
+
+    public static final class ZookeeperPathPrefix {
+
+        public static final String PRODUCT_SOLD_OUT = "/product_sold_out";
+
+        public static String getZKSoldOutProductPath(String productId) {
+            return ZookeeperPathPrefix.PRODUCT_SOLD_OUT + "/" + productId;
+        }
+
+    }
+
+    public static final class ProductType {
+        public static final String PRODUCT_MIAOSHA = "miaosha";
+
+        public static final String PRODUCT_HOT = "hot";
+    }
 }

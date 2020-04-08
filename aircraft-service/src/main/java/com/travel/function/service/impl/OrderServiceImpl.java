@@ -1,11 +1,16 @@
 package com.travel.function.service.impl;
 
+import com.travel.commons.enums.CustomerConstant;
 import com.travel.commons.enums.ResultStatus;
 import com.travel.commons.resultbean.ResultGeekQ;
 import com.travel.function.entity.MiaoShaOrder;
 import com.travel.function.entity.MiaoShaUser;
 import com.travel.function.entity.OrderInfo;
+import com.travel.function.exception.DeductStockException;
 import com.travel.function.logic.MiaoShaLogic;
+import com.travel.function.redisManager.RedisClient;
+import com.travel.function.redisManager.RedisKeyPrefix;
+import com.travel.function.redisManager.keysbean.GoodsKey;
 import com.travel.service.OrderService;
 import com.travel.vo.GoodsVo;
 import com.travel.vo.MiaoShaOrderVo;
@@ -16,6 +21,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import static com.travel.commons.enums.ResultStatus.MIAOSHA_DEDUCT_FAIL;
+
 /**
  * @author 邱润泽 bullock
  */
@@ -25,6 +32,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private MiaoShaLogic mSLogic;
+
+    @Autowired
+    private RedisClient redisClient;
 
 
     @Override
@@ -86,6 +96,5 @@ public class OrderServiceImpl implements OrderService {
             return resultGeekQ;
         }
     }
-
 
 }

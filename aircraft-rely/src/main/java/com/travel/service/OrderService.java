@@ -17,4 +17,5 @@ public interface OrderService {
     public ResultGeekQ<OrderInfoVo> createOrder(MiaoShaUserVo user, GoodsVo goods);
 
     public ResultGeekQ<OrderInfoVo> getOrderById(Long orderId);
+
 }

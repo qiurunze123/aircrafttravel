@@ -23,7 +23,6 @@ import com.travel.vo.OrderInfoVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,7 +57,7 @@ public class MiaoShaServiceImpl implements MiaoshaService {
 
         ResultGeekQ<OrderInfoVo> resultGeekQ = ResultGeekQ.build();
         try{
-            //减库存 下订单 写入秒杀订单
+            //减库存 下订单 写入秒杀订单  todo 减库存
             ResultGeekQ<Boolean> result = goodsService.reduceStock(goods);
             if(!ResultGeekQ.isSuccess(result)){
                 resultGeekQ.withErrorCodeAndMessage(ResultStatus.MIAOSHA_REDUCE_FAIL);
