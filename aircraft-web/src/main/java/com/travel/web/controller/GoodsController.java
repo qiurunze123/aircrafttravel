@@ -2,6 +2,7 @@ package com.travel.web.controller;
 
 import com.travel.commons.enums.ResultStatus;
 import com.travel.commons.resultbean.ResultGeekQ;
+import com.travel.function.access.UserCheckAndLimit;
 import com.travel.function.entity.MiaoShaUser;
 import com.travel.function.redisManager.RedisClient;
 import com.travel.function.redisManager.keysbean.GoodsKey;
@@ -43,6 +44,7 @@ public class GoodsController extends BaseController {
     @Autowired
     private RedisClient redisService;
 
+    @UserCheckAndLimit(seconds = 5, maxCount = 5, needLogin = true)
     @RequestMapping(value = "/to_detail")
     @ResponseBody
     public ResultGeekQ<GoodsDetailVo> goodsDetail(MiaoShaUser user, String goodsId) {

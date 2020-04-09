@@ -57,7 +57,7 @@ public class MiaoShaServiceImpl implements MiaoshaService {
 
         ResultGeekQ<OrderInfoVo> resultGeekQ = ResultGeekQ.build();
         try{
-            //减库存 下订单 写入秒杀订单  todo 减库存
+            //减库存 下订单 写入秒杀订单
             ResultGeekQ<Boolean> result = goodsService.reduceStock(goods);
             if(!ResultGeekQ.isSuccess(result)){
                 resultGeekQ.withErrorCodeAndMessage(ResultStatus.MIAOSHA_REDUCE_FAIL);

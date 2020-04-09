@@ -1,5 +1,7 @@
 package com.travel.function.service.impl;
 
+import com.travel.commons.enums.CustomerConstant;
+import com.travel.commons.enums.ProductSoutOutMap;
 import com.travel.commons.enums.ResultStatus;
 import com.travel.commons.resultbean.ResultGeekQ;
 import com.travel.function.entity.MiaoShaMessage;
@@ -10,6 +12,8 @@ import com.travel.function.logic.GoodsLogic;
 import com.travel.function.logic.MiaoShaLogic;
 import com.travel.function.rabbitmq.MQConfig;
 import com.travel.function.redisManager.RedisClient;
+import com.travel.function.redisManager.keysbean.GoodsKey;
+import com.travel.function.zk.ZkApi;
 import com.travel.service.MiaoshaService;
 import com.travel.service.RabbitMqService;
 import com.travel.vo.GoodsVo;
@@ -31,9 +35,12 @@ public class RabbitMqServiceImpl implements RabbitMqService {
     GoodsLogic goodsLogic;
     @Autowired
     MiaoshaService miaoshaService;
-
     @Autowired
     private MiaoShaLogic mSLogic;
+    @Autowired
+    private RedisClient redisClient;
+    @Autowired
+    private ZkApi zkApi;
 
     @Override
     @RabbitListener(queues = MQConfig.MIAOSHA_QUEUE)
@@ -59,6 +66,19 @@ public class RabbitMqServiceImpl implements RabbitMqService {
         //秒杀失败
         ResultGeekQ<OrderInfoVo> msR = miaoshaService.miaosha(userVo, goods);
         if(!ResultGeekQ.isSuccess(msR)){
+            //************************ 秒杀失败 回退操作 **************************************
+            redisClient.incr(GoodsKey.getMiaoshaGoodsStock, "" + goodsId);
+            if (ProductSoutOutMap.productSoldOutMap.get(goodsId) != null) {
+                ProductSoutOutMap.productSoldOutMap.remove(goodsId);
+            }
+            //修改zk的商品售完标记为false
+            try {
+                if (zkApi.exists(CustomerConstant.ZookeeperPathPrefix.getZKSoldOutProductPath(String.valueOf(goodsId)), true) != null) {
+                    zkApi.updateNode(CustomerConstant.ZookeeperPathPrefix.getZKSoldOutProductPath(String.valueOf(goodsId)), "false");
+                }
+            } catch (Exception e1) {
+                log.error("修改zk商品售完标记异常", e1);
+            }
             return;
         }
 

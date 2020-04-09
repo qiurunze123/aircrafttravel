@@ -68,6 +68,29 @@ public class RedisClient<T> {
         }
     }
 
+
+    public boolean set(String key, String value, String nxxx, String expx, long time) {
+        Jedis jedis = null;
+        try {
+            jedis =  jedisPool.getResource();
+            String result = "";
+            if(jedis != null){
+                result = jedis.set(key, value, nxxx, expx, time);
+
+            }
+            if ("OK".equals(result)) {
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            log.error("Redis缓存设置key值 出错！", e);
+            return false;
+        } finally {
+            returnToPool(jedis);
+        }
+    }
+
+
     /**
      * 获取当个对象
      * */

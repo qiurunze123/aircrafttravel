@@ -2,18 +2,18 @@ package com.travel.function.access;
 
 import com.alibaba.fastjson.JSON;
 import com.travel.commons.enums.ResultStatus;
-import com.travel.function.logic.MiaoShaLogic;
-import com.travel.function.redisManager.RedisClient;
 import com.travel.commons.resultbean.ResultGeekQ;
 import com.travel.function.entity.MiaoShaUser;
+import com.travel.function.logic.MiaoShaLogic;
+import com.travel.function.redisManager.RedisClient;
 import com.travel.service.MiaoShaUserService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -25,11 +25,13 @@ import static com.travel.commons.enums.CustomerConstant.COOKIE_NAME_TOKEN;
 import static com.travel.commons.enums.ResultStatus.ACCESS_LIMIT_REACHED;
 import static com.travel.commons.enums.ResultStatus.SESSION_ERROR;
 
-
+/**
+ * @author 邱润泽 bullock
+ */
 @Service
+@Slf4j
 public class AccessInterceptor  extends HandlerInterceptorAdapter {
 
-	private static Logger logger = LoggerFactory.getLogger(AccessInterceptor.class);
 
 	@Autowired
 	MiaoShaUserService userService;
@@ -44,14 +46,18 @@ public class AccessInterceptor  extends HandlerInterceptorAdapter {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		/**
-		 * 获取调用 获取主要方法
+		 * 获取调用 获取主要方法  因为在 WebConfig 里面没有进行静态资源的排除
+		 * 当然 你可以去排除 如果已经排除那就用不到这了  addPathPatterns("/**");
+		 * so 在这里进行 静态资源handler 排除
 		 */
-		if(handler instanceof HandlerMethod) {
-			logger.info("打印拦截方法handler ：{} ",handler);
+		if(handler instanceof ResourceHttpRequestHandler) {
+			log.info("---------ResourceHttpRequestHandler-------" + handler.toString() + "------------");
+		}else if(handler instanceof HandlerMethod) {
+			log.info("打印拦截方法handler ：{} ",handler);
 			HandlerMethod hm = (HandlerMethod)handler;
 			MiaoShaUser user = getUser(request, response);
 			UserContext.setUser(user);
-			AccessLimit accessLimit = hm.getMethodAnnotation(AccessLimit.class);
+			UserCheckAndLimit accessLimit = hm.getMethodAnnotation(UserCheckAndLimit.class);
 			if(accessLimit == null) {
 				return true;
 			}
@@ -66,14 +72,16 @@ public class AccessInterceptor  extends HandlerInterceptorAdapter {
 				}
 				key += "_" + user.getNickname();
 			}else {
+				log.info("****无需登录!**** 可直接访问");
 			}
+
+			//************************  设置redis等限流配置  **********************************
 			AccessKey ak = AccessKey.withExpire(seconds);
-//			Integer count = (Integer) redisService.get(ak, key, Integer.class);
-			Integer count =0;
+			Integer count = (Integer) redisService.get(ak, key, Integer.class);
 			if(count  == null) {
-//	    		 redisService.set(ak, key, 1);
+	    		 redisService.set(ak, key, 1);
 	    	}else if(count < maxCount) {
-//	    		 redisService.incr(ak, key);
+	    		 redisService.incr(ak, key);
 	    	}else {
 	    		render(response, ACCESS_LIMIT_REACHED);
 	    		return false;
@@ -88,6 +96,7 @@ public class AccessInterceptor  extends HandlerInterceptorAdapter {
 		UserContext.removeUser();
 	}
 
+	//**** 回复 ****
 	private void render(HttpServletResponse response, ResultStatus cm)throws Exception {
 		response.setContentType("application/json;charset=UTF-8");
 		OutputStream out = response.getOutputStream();
@@ -108,9 +117,13 @@ public class AccessInterceptor  extends HandlerInterceptorAdapter {
 	}
 
 	private String getCookieValue(HttpServletRequest request, String cookieNameToken) {
-		Cookie[] cookies = request.getCookies();
-		Cookie cookieValue =  Arrays.stream(cookies).filter(cookie -> cookie.getName().equals(cookieNameToken)).findFirst().get();
-		return cookieValue.getValue();
+			Cookie[] cookies = request.getCookies();
+			if(cookies == null){
+				log.error(" ***cookies 为null! 请登录***");
+				return null;
+			}
+			Cookie cookieValue =  Arrays.stream(cookies).filter(cookie -> cookie.getName().equals(cookieNameToken)).findFirst().get();
+			return cookieValue.getValue();
 	};
 
 }

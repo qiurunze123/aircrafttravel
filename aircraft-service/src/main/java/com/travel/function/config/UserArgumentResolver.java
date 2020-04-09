@@ -23,7 +23,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 
 import static com.travel.commons.enums.CustomerConstant.COOKIE_NAME_TOKEN;
-
+/**
+ * @author 邱润泽 bullock
+ */
 @Service
 @Slf4j
 public class UserArgumentResolver implements HandlerMethodArgumentResolver {

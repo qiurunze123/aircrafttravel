@@ -2,7 +2,9 @@ package com.travel.function.access;
 
 
 import com.travel.function.entity.MiaoShaUser;
-
+/**
+ * @author 邱润泽 bullock
+ */
 public class UserContext {
 	
 	private static ThreadLocal<MiaoShaUser> userHolder = new ThreadLocal<MiaoShaUser>();

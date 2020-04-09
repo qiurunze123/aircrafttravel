@@ -1,15 +1,19 @@
 package com.travel.web.controller;
 
 import com.travel.commons.enums.CustomerConstant;
+import com.travel.commons.enums.ProductSoutOutMap;
 import com.travel.commons.resultbean.ResultGeekQ;
+import com.travel.commons.utils.CommonMethod;
 import com.travel.commons.utils.ValidMSTime;
-import com.travel.function.access.AccessLimit;
+import com.travel.function.access.UserCheckAndLimit;
 import com.travel.function.entity.MiaoShaMessage;
 import com.travel.function.entity.MiaoShaUser;
 import com.travel.function.rabbitmq.MQSender;
 import com.travel.function.redisManager.RedisClient;
 import com.travel.function.redisManager.keysbean.GoodsKey;
 import com.travel.function.service.RandomValidateCodeService;
+import com.travel.function.zk.WatcherApi;
+import com.travel.function.zk.ZkApi;
 import com.travel.service.GoodsService;
 import com.travel.service.MiaoShaUserService;
 import com.travel.service.MiaoshaService;
@@ -18,10 +22,7 @@ import com.travel.vo.GoodsVo;
 import com.travel.vo.MiaoShaOrderVo;
 import com.travel.vo.MiaoShaUserVo;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.ZooDefs;
-import org.apache.zookeeper.ZooKeeper;
-import org.apache.zookeeper.data.Stat;
+import org.springframework.amqp.AmqpException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -36,7 +37,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.OutputStream;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static com.travel.commons.enums.CustomerConstant.MS_ING;
 import static com.travel.commons.enums.ResultStatus.*;
@@ -69,14 +69,7 @@ public class MiaoshaController {
     StringRedisTemplate redisTemplate;
 
     @Autowired
-    private ZooKeeper zooKeeper;
-
-    //商品售完标记map，多线程操作不能用HashMap
-    private static ConcurrentHashMap<String, Boolean> productSoldOutMap = new ConcurrentHashMap<>();
-
-    public static ConcurrentHashMap<String, Boolean> getProductSoldOutMap() {
-        return productSoldOutMap;
-    }
+    private ZkApi zooKeeper;
 
 
     @PostConstruct
@@ -119,7 +112,7 @@ public class MiaoshaController {
     }
 
 
-    @AccessLimit(seconds = 5, maxCount = 5, needLogin = true)
+    @UserCheckAndLimit(seconds = 5, maxCount = 5, needLogin = true)
     @RequestMapping(value = "/{path}/confirm", method = RequestMethod.POST)
     @ResponseBody
     public ResultGeekQ<Integer> miaosha(MiaoShaUser user, @PathVariable("path") String path,
@@ -140,16 +133,17 @@ public class MiaoshaController {
             }
 
             //zk 内存标记 相比用redis里的库存来判断减少了与redis的交互次数 todo  NEW
-            if (productSoldOutMap.get(goodsId) != null) {
+            if (ProductSoutOutMap.productSoldOutMap.get(goodsId) != null) {
                 result.withError(MIAOSHA_LOCAL_GOODS_NO.getCode(), MIAOSHA_LOCAL_GOODS_NO.getMessage());
                 return result;
             }
- //TODO  ===========================================================================
-//            //设置排队标记，超时时间根据业务情况决定，类似分布式锁
-//            if (!RedisUtil.set(CommonMethod.getMiaoshaOrderWaitFlagRedisKey(account.getAccount(), productId), productId, "NX", "EX", 120)) {
-//                return ReturnMessage.error("排队中，请耐心等待");
-//            }
-//
+           //********************************设置排队标记，超时时间根据业务情况决定，类似分布式锁 返回排队中   ************************
+            String redisK =  CommonMethod.getMiaoshaOrderWaitFlagRedisKey(String.valueOf(user.getId()), String.valueOf(goodsId));
+            if (!redisService.set(redisK,String.valueOf(goodsId), "NX", "EX", 120)) {
+                result.withError(MIAOSHA_QUEUE_ING.getCode(), MIAOSHA_QUEUE_ING.getMessage());
+                return result;
+            }
+
             //校验时间 防止刷时间
             ResultGeekQ<GoodsVo> goodR = goodsService.goodsVoByGoodId(Long.valueOf(goodsId));
             if (!ResultGeekQ.isSuccess(goodR)) {
@@ -162,19 +156,20 @@ public class MiaoshaController {
                 return result;
             }
 
-            //预减库存
-            Long stock = redisService.decr(GoodsKey.getMiaoshaGoodsStock, "" + goodsId);
-            if (stock < 0) {
-                result.withError(MIAO_SHA_OVER.getCode(), MIAO_SHA_OVER.getMessage());
-                return result;
-            }
-
             //是否已经秒杀到
             ResultGeekQ<MiaoShaOrderVo> order = orderService.getMiaoshaOrderByUserIdGoodsId(Long.valueOf(user.getNickname()), goodsId);
             if (!ResultGeekQ.isSuccess(order)) {
                 result.withError(REPEATE_MIAOSHA.getCode(), REPEATE_MIAOSHA.getMessage());
                 return result;
             }
+
+            //扣减库存 +  ZK 内存级别标识
+            ResultGeekQ<Boolean> deductR = deductStockCache(goodsId+"");
+            if(!ResultGeekQ.isSuccess(deductR)){
+                result.withError(deductR.getCode(), deductR.getMessage());
+                return result;
+            }
+
             //入队
             MiaoShaMessage mm = new MiaoShaMessage();
             mm.setUser(user);
@@ -182,7 +177,18 @@ public class MiaoshaController {
             sender.sendMiaoshaMessage(mm);
             //正在进行中
             result.setData(MS_ING);
-        } catch (Exception e) {
+        } catch (AmqpException amqpE){
+            log.error("创建订单失败", amqpE);
+            String goodsIdZ =  String.valueOf(goodsId);
+            redisService.incr(GoodsKey.getMiaoshaGoodsStock, "" + goodsIdZ);
+            ProductSoutOutMap.productSoldOutMap.remove(goodsIdZ);
+            //修改zk的商品售完标记为false
+            if (zooKeeper.exists(CustomerConstant.ZookeeperPathPrefix.getZKSoldOutProductPath(goodsIdZ), true) != null) {
+                zooKeeper.updateNode(CustomerConstant.ZookeeperPathPrefix.getZKSoldOutProductPath(goodsIdZ), "false");
+            }
+            result.withErrorCodeAndMessage(MIAOSHA_MQ_SEND_FAIL);
+            return result ;
+        }catch (Exception e) {
             result.withErrorCodeAndMessage(MIAOSHA_FAIL);
             return result;
         }
@@ -213,7 +219,7 @@ public class MiaoshaController {
         }
     }
 
-    @AccessLimit(seconds = 5, maxCount = 5, needLogin = true)
+    @UserCheckAndLimit(seconds = 5, maxCount = 5, needLogin = true)
     @RequestMapping(value = "/path", method = RequestMethod.GET)
     @ResponseBody
     public ResultGeekQ<String> getMiaoshaPath(HttpServletRequest request, MiaoShaUser user,
@@ -243,6 +249,7 @@ public class MiaoshaController {
     }
 
 
+    //TODO 为什么
     public ResultGeekQ<Boolean> deductStockCache(String goodsId) {
 
         ResultGeekQ<Boolean> resultGeekQ = ResultGeekQ.build();
@@ -256,16 +263,18 @@ public class MiaoshaController {
             if (stock < 0) {
                 log.info("***stock 扣减减少*** stock:{}",stock);
                 redisService.incr(GoodsKey.getMiaoshaGoodsStock, "" + goodsId);
-                productSoldOutMap.put(goodsId, true);
+                ProductSoutOutMap.productSoldOutMap.put(goodsId, true);
                 //写zk的商品售完标记true
                 if (zooKeeper.exists(CustomerConstant.ZookeeperPathPrefix.PRODUCT_SOLD_OUT, false) == null) {
-                    zooKeeper.create(CustomerConstant.ZookeeperPathPrefix.PRODUCT_SOLD_OUT, "".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+                    zooKeeper.createNode(CustomerConstant.ZookeeperPathPrefix.PRODUCT_SOLD_OUT,"");
+
                 }
                 if (zooKeeper.exists(CustomerConstant.ZookeeperPathPrefix.getZKSoldOutProductPath(goodsId), true) == null) {
-                    zooKeeper.create(CustomerConstant.ZookeeperPathPrefix.getZKSoldOutProductPath(goodsId), "true".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+                    zooKeeper.createNode(CustomerConstant.ZookeeperPathPrefix.getZKSoldOutProductPath(goodsId), "true");
                 }
-                if ("false".equals(new String(zooKeeper.getData(CustomerConstant.ZookeeperPathPrefix.getZKSoldOutProductPath(goodsId), true, new Stat())))) {
-                    zooKeeper.setData(CustomerConstant.ZookeeperPathPrefix.getZKSoldOutProductPath(goodsId), "true".getBytes(), -1);
+                if ("false".equals(new String(zooKeeper.getData(CustomerConstant.
+                        ZookeeperPathPrefix.getZKSoldOutProductPath(goodsId), new WatcherApi())))) {
+                    zooKeeper.updateNode(CustomerConstant.ZookeeperPathPrefix.getZKSoldOutProductPath(goodsId), "true");
                     //监听zk售完标记节点
                     zooKeeper.exists(CustomerConstant.ZookeeperPathPrefix.getZKSoldOutProductPath(goodsId), true);
                 }

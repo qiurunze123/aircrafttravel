@@ -13,7 +13,22 @@ public class CustomerConstant {
     //秒杀失败
     public static final Integer MS_F = -1;
 
+    //秒杀前缀
+    public static final class RedisKeyPrefix {
 
+        public static final String PRODUCT_STOCK = "product_stock";
+
+        public static final String PRODUCT = "product";
+
+        public static final String MIAOSHA_ORDER = "miaosha_order";
+
+        public static final String MIAOSHA_ORDER_WAIT = "miaosha_order_wait";
+
+        public static final String MIAOSHA_VERIFY_CODE = "miaosha_verify_code";
+
+        public static final String MIAOSHA_ORDER_TOKEN = "miaosha_order_token";
+
+    }
     /**
      * user status
      */
@@ -70,8 +85,8 @@ public class CustomerConstant {
 
         public static final String PRODUCT_SOLD_OUT = "/product_sold_out";
 
-        public static String getZKSoldOutProductPath(String productId) {
-            return ZookeeperPathPrefix.PRODUCT_SOLD_OUT + "/" + productId;
+        public static String getZKSoldOutProductPath(String goodId) {
+            return ZookeeperPathPrefix.PRODUCT_SOLD_OUT + "/" + goodId;
         }
 
     }

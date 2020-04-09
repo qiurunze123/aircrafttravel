@@ -74,7 +74,9 @@ public enum ResultStatus {
     MIAOSHA_ING(40007,"秒杀进行中"),
     MIAOSHA_END(40008,"秒杀已经结束"),
     MIAOSHA_DEDUCT_FAIL(40009,"扣减库存失败"),
-    MIAOSHA_LOCAL_GOODS_NO (40010,"访问太频繁!");
+    MIAOSHA_LOCAL_GOODS_NO (40010,"访问太频繁!"),
+    MIAOSHA_MQ_SEND_FAIL (40010,"MQ信息发送失败!"),
+    MIAOSHA_QUEUE_ING (40011,"排队中请耐心等待!");
 
 
     /**

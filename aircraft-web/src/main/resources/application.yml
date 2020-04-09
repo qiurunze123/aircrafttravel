@@ -1,3 +1,12 @@
 spring:
   profiles:
     active: dev
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+
+zookeeper:
+  address: 127.0.0.1:2181
+  timeout: 200000

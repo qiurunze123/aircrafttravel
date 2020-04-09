@@ -37,10 +37,7 @@ spring:
           max-attempts: 3
           initial-interval: 3000
         default-requeue-rejected: true
-server:
-  port: 8080
-  servlet:
-    context-path: /
+
 
 mybatis:
   mapper-locations: com/travel/function/mapper/*.xml
