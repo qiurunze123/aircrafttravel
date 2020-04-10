@@ -4,6 +4,7 @@ import com.travel.commons.enums.CustomerConstant;
 import com.travel.commons.enums.ProductSoutOutMap;
 import com.travel.commons.enums.ResultStatus;
 import com.travel.commons.resultbean.ResultGeekQ;
+import com.travel.commons.utils.CommonMethod;
 import com.travel.function.entity.MiaoShaMessage;
 import com.travel.function.entity.MiaoShaOrder;
 import com.travel.function.entity.MiaoShaUser;
@@ -82,6 +83,9 @@ public class RabbitMqServiceImpl implements RabbitMqService {
             return;
         }
 
+        //******************  如果成功则进行保存redis + flag ****************************
+        String msKey  = CommonMethod.getMiaoshaOrderRedisKey(String.valueOf(order.getUserId()), String.valueOf(goodsId));
+        redisClient.set(msKey, msR.getData());
 
     }
 }

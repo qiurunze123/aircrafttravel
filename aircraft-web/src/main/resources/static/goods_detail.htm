@@ -134,7 +134,7 @@ function getMiaoshaResult(goodsId){
 				}else if(result == 0){//继续轮询
 					setTimeout(function(){
 						getMiaoshaResult(goodsId);
-					}, 200);
+					}, 2000);
 				}else{
 					layer.confirm("恭喜你，秒杀成功！查看订单？", {btn:["确定","取消"]},
 							function(){
@@ -164,6 +164,7 @@ function doMiaosha(path){
 		success:function(data){
 			if(data.code == 0){
 				//window.location.href="/order_detail.htm?orderId="+data.data.id;
+                alert("谁给弄个进度条提交上来!");
 				getMiaoshaResult($("#goodsId").val());
 			}else{
 				layer.msg(data.message);

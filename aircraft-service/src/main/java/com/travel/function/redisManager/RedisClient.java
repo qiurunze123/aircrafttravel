@@ -1,6 +1,7 @@
 package com.travel.function.redisManager;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,32 @@ public class RedisClient<T> {
             jedis.close();
         }
     }
+
+
+    /**
+     * 向缓存中设置对象
+     *
+     * @param key
+     * @param value
+     * @return
+     */
+    public  boolean set(String key, Object value) {
+        Jedis jedis = null;
+        try {
+            String objectJson = JSON.toJSONString(value);
+            jedis = jedisPool.getResource();
+            if (jedis != null) {
+                jedis.set(key, objectJson);
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            returnToPool(jedis);
+        }
+    }
+
     /**
      * 设置对象
      * */
@@ -100,6 +127,24 @@ public class RedisClient<T> {
             jedis =  jedisPool.getResource();
             //生成真正的key
             String realKey  = prefix.getPrefix() + key;
+            String  str = jedis.get(realKey);
+            T t =  stringToBean(str, clazz);
+            return t;
+        }finally {
+            returnToPool(jedis);
+        }
+    }
+
+
+    /**
+     * 获取当个对象
+     * */
+    public <T> T get(String key,  Class<T> clazz) {
+        Jedis jedis = null;
+        try {
+            jedis =  jedisPool.getResource();
+            //生成真正的key
+            String realKey  =  key;
             String  str = jedis.get(realKey);
             T t =  stringToBean(str, clazz);
             return t;

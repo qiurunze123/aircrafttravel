@@ -23,6 +23,9 @@ public class WebConfig implements WebMvcConfigurer {
     @Autowired
     AccessInterceptor accessInterceptor;
 
+//    @Autowired
+//    IpLimitInterceptor ipLimitInterceptor;
+
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
@@ -33,6 +36,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(accessInterceptor);
+//        registry.addInterceptor(ipLimitInterceptor);
     }
 
 

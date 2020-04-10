@@ -2,12 +2,14 @@ package com.travel.web.controller;
 
 import com.travel.commons.enums.CustomerConstant;
 import com.travel.commons.enums.ProductSoutOutMap;
+import com.travel.commons.enums.ResultStatus;
 import com.travel.commons.resultbean.ResultGeekQ;
 import com.travel.commons.utils.CommonMethod;
 import com.travel.commons.utils.ValidMSTime;
 import com.travel.function.access.UserCheckAndLimit;
 import com.travel.function.entity.MiaoShaMessage;
 import com.travel.function.entity.MiaoShaUser;
+import com.travel.function.entity.OrderInfo;
 import com.travel.function.rabbitmq.MQSender;
 import com.travel.function.redisManager.RedisClient;
 import com.travel.function.redisManager.keysbean.GoodsKey;
@@ -98,17 +100,27 @@ public class MiaoshaController {
                 result.withError(SESSION_ERROR.getCode(), SESSION_ERROR.getMessage());
                 return result;
             }
-            ResultGeekQ<Long> response = miaoshaService.getMiaoshaResult(user.getId(), goodsId);
-            if (!ResultGeekQ.isSuccess(response)) {
-                result.withError(response.getCode(), response.getMessage());
+
+            String redisK =  CommonMethod.getMiaoshaOrderWaitFlagRedisKey(String.valueOf(user.getNickname()), String.valueOf(goodsId));
+            //判断redis里的排队标记，排队标记不为空返回还在排队中
+            //一定要先判断排队标记再判断是否已生成订单，不然又会存在并发的时间差问题
+            if (redisService.get(redisK+String.valueOf(goodsId),String.class)!=null) {
+                result.withError(MIAOSHA_QUEUE_ING.getCode(),MIAOSHA_QUEUE_ING.getMessage());
                 return result;
             }
-            result.setData(response.getData());
+
+            //查询用户秒杀商品订单是否创建成功
+            Object order = redisService.get(redisK, OrderInfo.class);
+            //秒杀成功
+            if(order != null) {
+                return result;
+            }
+            result.withErrorCodeAndMessage(ResultStatus.MIAOSHA_FAIL);
+            return result;
         } catch (Exception e) {
             result.withError(SYSTEM_ERROR);
             return result;
         }
-        return result;
     }
 
 
