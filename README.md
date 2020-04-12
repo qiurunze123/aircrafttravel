@@ -1,7 +1,7 @@
 
 分布式系统正在更新中....
 
-###如何在本地跑起来
+### 如何在本地跑起来
 
 #### redis window 下载 以及 客户端下载
 
@@ -24,6 +24,7 @@
 链接：https://pan.baidu.com/s/1j7qSrxkWIDSpVTjdCpd4tQ 
 提取码：u3rl 
 
+### 安装完成后并执行sql
 ### 秒杀直接运行 AirCraftApplication 请安装好 lombok 插件
 
 秒杀重构系统 .... 更新中 
