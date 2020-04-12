@@ -108,17 +108,19 @@ public class MiaoshaController {
                 result.withError(MIAOSHA_QUEUE_ING.getCode(),MIAOSHA_QUEUE_ING.getMessage());
                 return result;
             }
-
+            String redisMr = CommonMethod.getMiaoshaOrderRedisKey(String.valueOf(user.getNickname()), String.valueOf(goodsId));
             //查询用户秒杀商品订单是否创建成功
-            Object order = redisService.get(redisK, OrderInfo.class);
+            Object order = redisService.get(redisMr, OrderInfo.class);
             //秒杀成功
             if(order != null) {
+                OrderInfo info = (OrderInfo)order;
+                result.setData(info.getId());
                 return result;
             }
             result.withErrorCodeAndMessage(ResultStatus.MIAOSHA_FAIL);
             return result;
         } catch (Exception e) {
-            result.withError(SYSTEM_ERROR);
+            result.withErrorCodeAndMessage(ResultStatus.MIAOSHA_FAIL);
             return result;
         }
     }
@@ -149,7 +151,7 @@ public class MiaoshaController {
                 result.withError(MIAOSHA_LOCAL_GOODS_NO.getCode(), MIAOSHA_LOCAL_GOODS_NO.getMessage());
                 return result;
             }
-           //********************************设置排队标记，超时时间根据业务情况决定，类似分布式锁 返回排队中   ************************
+           //*********************getMiaoshaPath***********设置排队标记，超时时间根据业务情况决定，类似分布式锁 返回排队中   ************************
             String redisK =  CommonMethod.getMiaoshaOrderWaitFlagRedisKey(String.valueOf(user.getId()), String.valueOf(goodsId));
             if (!redisService.set(redisK,String.valueOf(goodsId), "NX", "EX", 120)) {
                 result.withError(MIAOSHA_QUEUE_ING.getCode(), MIAOSHA_QUEUE_ING.getMessage());

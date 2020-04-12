@@ -8,7 +8,7 @@ public interface OrderInfoDao {
 
     int insert(OrderInfo record);
 
-    int insertSelective(OrderInfo record);
+    Long insertSelective(OrderInfo record);
 
     OrderInfo selectByPrimaryKey(Long id);
 

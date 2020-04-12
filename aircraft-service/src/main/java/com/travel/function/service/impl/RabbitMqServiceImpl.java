@@ -82,9 +82,9 @@ public class RabbitMqServiceImpl implements RabbitMqService {
             }
             return;
         }
-
+        OrderInfoVo orderInfo = msR.getData();
         //******************  如果成功则进行保存redis + flag ****************************
-        String msKey  = CommonMethod.getMiaoshaOrderRedisKey(String.valueOf(order.getUserId()), String.valueOf(goodsId));
+        String msKey  = CommonMethod.getMiaoshaOrderRedisKey(String.valueOf(orderInfo.getUserId()), String.valueOf(goodsId));
         redisClient.set(msKey, msR.getData());
 
     }

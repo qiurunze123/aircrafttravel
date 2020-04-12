@@ -38,7 +38,7 @@
       #{goodsPrice,jdbcType=DECIMAL}, #{orderChannel,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, 
       #{createDate,jdbcType=TIMESTAMP}, #{payDate,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.travel.function.entity.OrderInfo" useGeneratedKeys="true" >
+  <insert id="insertSelective" parameterType="com.travel.function.entity.OrderInfo"  useGeneratedKeys="true" keyProperty="id" >
     insert into order_info
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >

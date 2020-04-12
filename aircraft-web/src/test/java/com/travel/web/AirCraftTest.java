@@ -1,8 +1,10 @@
 package com.travel.web;
 
-import com.travel.commons.utils.MD5Util;
+import com.alibaba.fastjson.JSON;
 import com.travel.commons.utils.UUIDUtil;
+import com.travel.function.dao.OrderInfoDao;
 import com.travel.function.entity.MiaoShaUser;
+import com.travel.function.entity.OrderInfo;
 import com.travel.function.redisManager.RedisClient;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -12,11 +14,12 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.function.Predicate;
+import java.util.Date;
 
 /**
  * @author 邱润泽 bullock
@@ -28,6 +31,8 @@ import java.util.function.Predicate;
 @Slf4j
 public class AirCraftTest {
 
+    @Autowired
+    private OrderInfoDao dao;
 //
 //    @Autowired
 //    private RedissonClient redissonClient;
@@ -64,11 +69,18 @@ public class AirCraftTest {
     @Test
     public void md5Test(){
 
-        if(Predicate.isEqual("1").equals("1")){
-            System.out.println("======================");
-        }
-        String passwd =  MD5Util.inputPassToDbPass("123456","1a2b3c4d");
-        System.out.println(passwd);
+        OrderInfo orderInfo = new OrderInfo();
+        orderInfo.setCreateDate(new Date());
+        orderInfo.setDeliveryAddrId(0L);
+        orderInfo.setGoodsCount(1);
+        orderInfo.setGoodsId(1L);
+        orderInfo.setGoodsName("ssss");
+        orderInfo.setGoodsPrice(new BigDecimal(1));
+        orderInfo.setOrderChannel(1);
+        orderInfo.setStatus(0);
+        orderInfo.setUserId(222L);
+        Long info  = dao.insertSelective(orderInfo);
+        log.info(JSON.toJSONString(orderInfo.getId()));
     }
 
     @Test

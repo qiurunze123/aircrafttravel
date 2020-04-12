@@ -31,7 +31,7 @@ public interface MiaoShaLogic {
 
     public HttpServletResponse addCookie(HttpServletResponse response, String token, MiaoShaUser user);
 
-    int insertSelective(OrderInfo record);
+    Long insertSelective(OrderInfo record);
 
     public OrderInfo getOrderById(Long orderId);
 

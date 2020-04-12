@@ -54,10 +54,10 @@ public class MiaoShaLogicImpl implements MiaoShaLogic {
         orderInfo.setOrderChannel(1);
         orderInfo.setStatus(0);
         orderInfo.setUserId(user.getId());
-        long orderId = orderInfoDao.insertSelective(orderInfo);
+        orderInfoDao.insertSelective(orderInfo);
         MiaoShaOrder miaoshaOrder = new MiaoShaOrder();
         miaoshaOrder.setGoodsId(goods.getId());
-        miaoshaOrder.setOrderId(orderId);
+        miaoshaOrder.setOrderId(orderInfo.getId());
         miaoshaOrder.setUserId(user.getId());
         miaoShaOrderDao.insertSelective(miaoshaOrder);
         return orderInfo;
@@ -105,7 +105,7 @@ public class MiaoShaLogicImpl implements MiaoShaLogic {
     }
 
     @Override
-    public int insertSelective(OrderInfo record) {
+    public Long insertSelective(OrderInfo record) {
         return orderInfoDao.insertSelective(record);
     }
 
