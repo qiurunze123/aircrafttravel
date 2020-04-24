@@ -3,6 +3,7 @@ package com.travel.function.access;
 import com.alibaba.fastjson.JSON;
 import com.travel.commons.enums.ResultStatus;
 import com.travel.commons.resultbean.ResultGeekQ;
+import com.travel.commons.utils.CookiesUtils;
 import com.travel.function.entity.MiaoShaUser;
 import com.travel.function.logic.MiaoShaLogic;
 import com.travel.function.redisManager.RedisClient;
@@ -15,11 +16,9 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
-import java.util.Arrays;
 
 import static com.travel.commons.enums.CustomerConstant.COOKIE_NAME_TOKEN;
 import static com.travel.commons.enums.ResultStatus.ACCESS_LIMIT_REACHED;
@@ -108,7 +107,7 @@ public class AccessInterceptor  extends HandlerInterceptorAdapter {
 
 	private MiaoShaUser getUser(HttpServletRequest request, HttpServletResponse response) {
 		String paramToken = request.getParameter(COOKIE_NAME_TOKEN);
-		String cookieToken = getCookieValue(request, COOKIE_NAME_TOKEN);
+		String cookieToken = CookiesUtils.getCookieValue(request, COOKIE_NAME_TOKEN);
 		if(StringUtils.isEmpty(cookieToken) && StringUtils.isEmpty(paramToken)) {
 			return null;
 		}
@@ -116,14 +115,14 @@ public class AccessInterceptor  extends HandlerInterceptorAdapter {
 		return mSLogic.getByToken(response, token);
 	}
 
-	private String getCookieValue(HttpServletRequest request, String cookieNameToken) {
-			Cookie[] cookies = request.getCookies();
-			if(cookies == null){
-				log.error(" ***cookies 为null! 请登录***");
-				return null;
-			}
-			Cookie cookieValue =  Arrays.stream(cookies).filter(cookie -> cookie.getName().equals(cookieNameToken)).findFirst().get();
-			return cookieValue.getValue();
-	};
+//	private String getCookieValue(HttpServletRequest request, String cookieNameToken) {
+//			Cookie[] cookies = request.getCookies();
+//			if(cookies == null){
+//				log.error(" ***cookies 为null! 请登录***");
+//				return null;
+//			}
+//			Cookie cookieValue =  Arrays.stream(cookies).filter(cookie -> cookie.getName().equals(cookieNameToken)).findFirst().get();
+//			return cookieValue.getValue();
+//	};
 
 }

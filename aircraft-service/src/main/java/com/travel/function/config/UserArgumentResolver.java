@@ -1,13 +1,11 @@
 package com.travel.function.config;
 
 import com.travel.commons.enums.ResultStatus;
+import com.travel.commons.utils.CookiesUtils;
 import com.travel.function.entity.MiaoShaUser;
 import com.travel.function.exception.UserException;
 import com.travel.function.logic.MiaoShaLogic;
-import com.travel.service.MiaoShaUserService;
-import com.travel.vo.MiaoShaUserVo;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Service;
@@ -17,10 +15,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
 
 import static com.travel.commons.enums.CustomerConstant.COOKIE_NAME_TOKEN;
 /**
@@ -48,7 +44,7 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         HttpServletResponse response = webRequest.getNativeResponse(HttpServletResponse.class);
 
-        String cookieToken = getCookieValue(request,COOKIE_NAME_TOKEN);
+        String cookieToken = CookiesUtils.getCookieValue(request,COOKIE_NAME_TOKEN);
         String paramToken = request.getParameter(COOKIE_NAME_TOKEN);
 
         if(StringUtils.isEmpty(cookieToken)&& StringUtils.isEmpty(paramToken)){
@@ -59,15 +55,20 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
         MiaoShaUser user = mSLogic.getByToken(response,token);
         return user;
     }
-
-    private String getCookieValue(HttpServletRequest request, String cookieNameToken) {
-        Cookie[] cookies = request.getCookies();
-        if(cookies == null){
-            log.error(" ***cookies 为null! 请登录***");
-            return null;
-        }
-        Cookie cookieValue =  Arrays.stream(cookies).filter(cookie -> cookie.getName().equals(cookieNameToken)).findFirst().get();
-        return cookieValue.getValue();
-    };
+//
+//    private String getCookieValue(HttpServletRequest request, String cookieNameToken) {
+//        Cookie[] cookies = request.getCookies();
+//        Optional cookiesV =  Optional.ofNullable(cookies);
+//        cookiesV.orElseGet(()->{
+//            log.error(" ***cookies 为null! 请登录***");
+//            return null;
+//        });
+//        List<String> tokens =  Arrays.asList(request.getCookies()).stream().
+//                filter(cookie -> cookie.getName().equals(cookieNameToken))
+//                .map(cookie -> cookie.getValue())
+//                .collect(Collectors.toList());
+//        return CollectionUtils.isEmpty(tokens)?"":tokens.get(0);
+//
+//    };
 
 }
