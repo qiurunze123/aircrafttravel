@@ -12,7 +12,7 @@
 #### zookeper window 下载
 
 链接：https://pan.baidu.com/s/1TAIy4OFXfl_FivbU_lBd7g 
-提取码：8y5z
+提取码：8y5z 
 
 #### rabbitmq window 下载
 
