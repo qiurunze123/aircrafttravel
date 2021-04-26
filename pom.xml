@@ -44,7 +44,7 @@
         <jack.version>2.10.2</jack.version>
         <zk.version>4.0.0</zk.version>
         <zk.clientversion>3.4.11</zk.clientversion>
-        <file.version>2.6</file.version>
+        <file.version>2.7</file.version>
 
     </properties>
 
